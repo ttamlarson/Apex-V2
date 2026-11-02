@@ -521,6 +521,11 @@ function personalRecords(){
  }));
  return Object.values(best);
 }
+ function weekKey(date){
+ const d=new Date(date+'T12:00:00');
+ d.setDate(d.getDate()-((d.getDay()+6)%7));
+ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 function xpData(){
  const protein=proteinDays();
  const recoveryDates=new Set(state.recoveries.map(r=>r.date).filter(Boolean));
