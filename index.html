@@ -609,12 +609,8 @@ function challengeCount(data){
  return d+p+r+(sessions>=4?1:0)+(pDays>=5?1:0)+(data.prCount>0?1:0);
 }
 function render(){
- renderHome();
  renderFood();
- renderMeasures();
- renderLifts();
- renderRecovery();
- renderWorkoutHistory();
+ renderLevelUp();
  $('ctarget').value=state.settings.calories;
  $('ptarget').value=state.settings.protein;
  $('fatpercent').value=state.settings.fatPercent||27;
