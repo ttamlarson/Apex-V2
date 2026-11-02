@@ -640,7 +640,73 @@ function renderHome(){
   ?recent.map(w=>'<div class="listitem"><strong>'+esc(w.type||'Workout')+'</strong><div class="small">'+dateText(w.date)+'</div></div>').join('')
   :'<div class="empty">Your activity will appear here.</div>';
 }
+ 
+function drawChart(measurements){
+ const canvas=$('chart');
+ if(!canvas)return;
 
+ const ctx=canvas.getContext('2d');
+ const rect=canvas.getBoundingClientRect();
+ const width=Math.max(rect.width,300);
+ const height=190;
+ const dpr=window.devicePixelRatio||1;
+
+ canvas.width=width*dpr;
+ canvas.height=height*dpr;
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ ctx.clearRect(0,0,width,height);
+
+ const data=measurements
+  .filter(x=>x.weight!==''&&Number(x.weight)>0)
+  .sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+
+ if(!data.length){
+  ctx.fillStyle='#999';
+  ctx.textAlign='center';
+  ctx.font='13px sans-serif';
+  ctx.fillText('Log your weight to see progress',width/2,height/2);
+  return;
+ }
+
+ const values=data.map(x=>Number(x.weight));
+ const min=Math.min(...values)-1;
+ const max=Math.max(...values)+1;
+ const left=38,right=width-15,top=20,bottom=height-35;
+
+ ctx.strokeStyle='rgba(255,255,255,.15)';
+ ctx.fillStyle='#999';
+ ctx.font='11px sans-serif';
+
+ for(let i=0;i<5;i++){
+  const y=top+(bottom-top)*i/4;
+  const value=max-(max-min)*i/4;
+  ctx.beginPath();
+  ctx.moveTo(left,y);
+  ctx.lineTo(right,y);
+  ctx.stroke();
+  ctx.textAlign='right';
+  ctx.fillText(value.toFixed(1),left-7,y+4);
+ }
+
+ const points=data.map((item,i)=>({
+  x:data.length===1?(left+right)/2:left+(right-left)*i/(data.length-1),
+  y:bottom-(Number(item.weight)-min)/(max-min)*(bottom-top)
+ }));
+
+ ctx.strokeStyle='#d4a85f';
+ ctx.lineWidth=2;
+ ctx.beginPath();
+ points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+ ctx.stroke();
+
+ points.forEach(p=>{
+  ctx.fillStyle='#d4a85f';
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,4,0,Math.PI*2);
+  ctx.fill();
+ });
+}
+ 
 function render(){
  renderHome();
  renderFood();
