@@ -847,7 +847,6 @@ $('saverecovery').onclick=()=>{
  save();
  toast('Check-in saved');
 };
-$('saverecovery').onclick=()=>{state.recoveries.push({id:id(),date:$('rdate').value||today(),sleep:$('sleep').value,energy:$('energy').value,stress:$('stress').value,soreness:$('soreness').value,notes:$('rnotes').value.trim()});$('rnotes').value='';save();toast('Check-in saved')};
 $('recoverylist').onclick=e=>{const b=e.target.closest('[data-recovery-del]');if(b){state.recoveries=state.recoveries.filter(r=>r.id!==b.dataset.recoveryDel);save()}};
 $('savesettings').onclick=()=>{
  state.settings.calories=Math.max(1,n($('ctarget').value)||2800);
