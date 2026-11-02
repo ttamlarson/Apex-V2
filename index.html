@@ -613,6 +613,35 @@ function challengeCount(data){
  const pDays=[...proteinDays()].filter(x=>weekKey(x)===week).length;
  return d+p+r+(sessions>=4?1:0)+(pDays>=5?1:0)+(data.prCount>0?1:0);
 }
+ function renderHome(){
+ const t=totals(today());
+ const m=macroTargets();
+
+ $('dcal').textContent=Math.round(t.cal);
+ $('dpro').textContent=Math.round(t.pro)+'g';
+ $('dcalgoal').textContent='of '+m.calories+' kcal';
+ $('dprogoal').textContent='of '+Math.round(m.protein)+' g';
+
+ bar('dcalbar',t.cal,m.calories);
+ bar('dprobar',t.pro,m.protein);
+
+ const measurements=state.measurements
+  .filter(x=>x.weight!==''&&x.weight!==undefined)
+  .sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+
+ $('dweight').textContent=measurements.length
+  ?measurements[0].weight+' kg':'—';
+
+ $('dsessions').textContent=state.workouts.length;
+
+ const recent=[...state.workouts]
+  .sort((a,b)=>(b.date||'').localeCompare(a.date||''))
+  .slice(0,5);
+
+ $('activity').innerHTML=recent.length
+  ?recent.map(w=>'<div class="listitem"><strong>'+esc(w.type||'Workout')+'</strong><div class="small">'+dateText(w.date)+'</div></div>').join('')
+  :'<div class="empty">Your activity will appear here.</div>';
+}
 function render(){
  renderFood();
  renderLevelUp();
