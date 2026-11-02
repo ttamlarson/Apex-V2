@@ -630,7 +630,8 @@ function renderHome(){
   .filter(x=>x.weight!==''&&x.weight!==undefined)
   .sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 
- $('dweight').textContent=measurements.length ? measurements[0].weight+' kg':'—';
+ const latestWeight=[...state.measurements].reverse().find(x=>x.weight!==''&&x.weight!==undefined&&x.weight!==null);
+$('dweight').textContent=latestWeight ? latestWeight.weight+' kg':'—';
  $('dsessions').textContent=state.workouts.length;
 
  const recent=[...state.workouts]
