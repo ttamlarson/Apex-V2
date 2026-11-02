@@ -263,14 +263,24 @@ footer{text-align:center;color:#707780;font-size:10px;letter-spacing:.12em;margi
 
 <section class="view" id="settings">
  <div class="eyebrow">YOUR RECORDS</div><h2>Settings & backups</h2>
- <div class="card"><h3>Daily targets</h3><div class="formgrid">
-  <div class="field"><label>Calories (kcal)</label><input id="ctarget" type="number" min="1" value="2800"></div>
-  <div class="field"><label>Protein (g)</label><input id="ptarget" type="number" min="1" value="130"></div>
- </div><button class="btn" id="savesettings" style="margin-top:12px">Save targets</button></div>
- <div class="card"><h3>Backup & restore</h3><p>Export your data regularly. Records are stored in this browser and do not automatically sync to other devices.</p><div class="row"><button class="btn" id="export">Export JSON backup</button><label class="btn secondary" for="import">Import backup</label><input class="hidden" id="import" type="file" accept=".json,application/json"></div><p class="small">Importing replaces current records. Only import a backup you trust.</p></div>
- <div class="card"><h3>Local storage</h3><p>Your records stay in this browser. Clearing browser data can erase them.</p><button class="btn danger" id="erase">Delete all app data</button></div>
-</section>
-<footer>APEX PROTOCOL · TRAIN WITH PURPOSE. BUILD WITH DISCIPLINE.</footer>
+<div class="card">
+ <h3>Daily targets & macro split</h3>
+ <div class="formgrid">
+  <div class="field">
+   <label>Calories (kcal)</label>
+   <input id="ctarget" type="number" min="1" value="2800">
+  </div>
+  <div class="field">
+   <label>Protein (g)</label>
+   <input id="ptarget" type="number" min="1" value="130">
+  </div>
+  <div class="field">
+   <label>Fat (% of calories)</label>
+   <input id="fatpercent" type="number" min="10" max="50" value="27">
+  </div>
+ </div>
+ <p class="small">Carbohydrates automatically fill the remaining calories after protein and fat.</p>
+ <button class="btn" id="savesettings" style="margin-top:12px">Save targets</button>
 </div>
 <div id="toast" class="hidden" role="status"></div>
 
@@ -281,7 +291,7 @@ const KEY='apexProtocolData_v1';
 const $=id=>document.getElementById(id);
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const id=()=>Math.random().toString(36).slice(2,10);
-const defaults=()=>({settings:{calories:2800,protein:130},workouts:[],foods:[],measurements:[],recoveries:[],current:{type:'Upper A',date:today(),duration:'',notes:'',exercises:[]}});
+const defaults=()=>({settings:{calories:2800,protein:130,fatPercent:27},workouts:[],foods:[],measurements:[],recoveries:[],current:{type:'Upper A',date:today(),duration:'',notes:'',exercises:[]}});
 let state;
 try{state={...defaults(),...JSON.parse(localStorage.getItem(KEY)||'{}')};const d=defaults();state.settings={...d.settings,...state.settings};for(const k of ['workouts','foods','measurements','recoveries'])if(!Array.isArray(state[k]))state[k]=[];state.current={...d.current,...state.current}}catch{state=defaults()}
 const plans = {
@@ -363,34 +373,51 @@ function renderExercises(){
  const el=$('exercises');
  if(!state.current.exercises.length){el.innerHTML='<div class="empty">Load a workout or add your own exercise.</div>';return}
  el.innerHTML=state.current.exercises.map(e=>`<div class="exercise"><div class="between"><div style="flex:1"><input data-name="${e.id}" value="${esc(e.name)}" aria-label="Exercise name" placeholder="Exercise name"><div class="small" style="margin-top:5px">Target reps: ${esc(e.target)}</div></div><button class="iconbtn" data-remove="${e.id}">✕</button></div><div class="setrow"><span class="small">SET</span><span class="small">WEIGHT (kg)</span><span class="small">REPS</span><span></span></div>${e.sets.map((s,i)=>`<div class="setrow"><span class="small">${i+1}</span><input type="number" min="0" step=".25" data-set="${e.id}" data-i="${i}" data-key="weight" value="${esc(s.weight)}" placeholder="kg" aria-label="Weight"><input type="number" min="0" data-set="${e.id}" data-i="${i}" data-key="reps" value="${esc(s.reps)}" placeholder="reps" aria-label="Reps"><button class="iconbtn" data-done="${e.id}" data-i="${i}" style="color:${s.done?'var(--green)':'var(--muted)'}">${s.done?'✓':'○'}</button></div>`).join('')}<div class="row" style="margin-top:9px"><button class="btn secondary" data-addset="${e.id}">+ Set</button><button class="btn secondary" data-rest>Start rest</button></div></div>`).join('');
-}function totals(date){
- let cal=0;
- let pro=0;
+function totals(date){
+ let cal=0,pro=0,carb=0,fat=0;
  const foods=Array.isArray(state.foods)?state.foods:[];
  for(const f of foods){
-  if(!f||f.date!==date) continue;
-  const cv=Number.parseFloat(f.cal);
-  const pv=Number.parseFloat(f.pro);
-  cal+=Number.isFinite(cv)?cv:0;
-  pro+=Number.isFinite(pv)?pv:0;
+  if(!f||f.date!==date)continue;
+  const vals=[f.cal,f.pro,f.carb,f.fat].map(v=>Number.parseFloat(v));
+  cal+=Number.isFinite(vals[0])?vals[0]:0;
+  pro+=Number.isFinite(vals[1])?vals[1]:0;
+  carb+=Number.isFinite(vals[2])?vals[2]:0;
+  fat+=Number.isFinite(vals[3])?vals[3]:0;
  }
- return {
-  cal:Number.isFinite(cal)?cal:0,
-  pro:Number.isFinite(pro)?pro:0
- };
+ return {cal,pro,carb,fat};
+}
+ function macroTargets(){
+ const calories=Math.max(1,n(state.settings.calories));
+ const protein=Math.max(0,n(state.settings.protein));
+ const fatPercent=Math.min(50,Math.max(10,n(state.settings.fatPercent)||27));
+ const fat=calories*fatPercent/100/9;
+ const carbs=Math.max(0,(calories-protein*4-fat*9)/4);
+ return {calories,protein,fat,carbs,fatPercent};
 }
 function bar(id,val,target){$(id).style.width=Math.min(100,target?Math.max(0,val/target*100):0)+'%'}
-function renderFood(){const t=totals($('fdate').value||today()),c=n(state.settings.calories),p=n(state.settings.protein);$('ncal').textContent=Math.round(t.cal);$('npro').textContent=Math.round(t.pro);$('ncalgoal').textContent='Target: '+c+' kcal';$('nprogoal').textContent='Target: '+p+' g';bar('ncalbar',t.cal,c);bar('nprobar',t.pro,p);const fs=state.foods.filter(f=>f.date===($('fdate').value||today()));$('foodlist').innerHTML=fs.length?fs.map(f=>`<div class="listitem between"><div><strong>${esc(f.name)}</strong><div class="small">${n(f.cal)} kcal · ${n(f.pro)} g protein</div></div><button class="iconbtn" data-food-del="${f.id}">✕</button></div>`).join(''):'<div class="empty">No food logged for this date.</div>'}
-function renderWorkoutHistory(){$('whistory').innerHTML=state.workouts.length?[...state.workouts].reverse().map(w=>`<div class="listitem"><div class="between"><strong>${esc(w.type)}</strong><span class="small">${dateText(w.date)}</span></div><div class="small">${w.exercises.length} exercises · ${w.exercises.reduce((a,e)=>a+e.sets.filter(s=>s.done).length,0)} sets completed${w.duration?' · '+esc(w.duration)+' min':''}</div>${w.notes?`<p class="small">${esc(w.notes)}</p>`:''}<div class="row"><button class="btn secondary" data-reload="${w.id}">Load again</button><button class="btn danger" data-work-del="${w.id}">Delete</button></div></div>`).join(''):'<div class="empty">No workouts saved yet.</div>'}
-function renderMeasures(){const ms=[...state.measurements].sort((a,b)=>a.date.localeCompare(b.date));const last=ms.filter(m=>m.weight!=='').at(-1);$('dweight').textContent=last?last.weight+' kg':'—';$('measurelist').innerHTML=ms.length?[...ms].reverse().map(m=>`<div class="history"><span>${dateText(m.date)}</span><strong>${m.weight!==''?esc(m.weight)+' kg':'—'}</strong><span>${m.waist?esc(m.waist)+' cm waist':'—'}</span><button class="iconbtn" data-measure-del="${m.id}">✕</button></div>`).join(''):'<div class="empty">No measurements yet.</div>';drawChart(ms)}
-function drawChart(ms){const c=$('chart');if(!c)return;const w=c.clientWidth||600,h=190,dpr=window.devicePixelRatio||1;c.width=w*dpr;c.height=h*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);x.clearRect(0,0,w,h);x.strokeStyle='#343941';for(let i=1;i<4;i++){x.beginPath();x.moveTo(8,h*i/4);x.lineTo(w-8,h*i/4);x.stroke()}const a=ms.filter(m=>n(m.weight)>0);if(!a.length){x.fillStyle='#a0a5ad';x.font='13px system-ui';x.fillText('Log your body weight to start the chart.',12,h/2);return}const vals=a.map(m=>n(m.weight)),lo=Math.min(...vals)-1,hi=Math.max(...vals)+1,px=i=>a.length===1?w/2:12+i*(w-24)/(a.length-1),py=v=>h-18-(v-lo)/(hi-lo)*(h-36);x.strokeStyle='#d8dde3';x.lineWidth=2;x.beginPath();a.forEach((m,i)=>i?x.lineTo(px(i),py(n(m.weight))):x.moveTo(px(i),py(n(m.weight))));x.stroke();a.forEach((m,i)=>{x.fillStyle='#f3f4f6';x.beginPath();x.arc(px(i),py(n(m.weight)),3,0,Math.PI*2);x.fill()});x.fillStyle='#a0a5ad';x.font='11px system-ui';x.fillText(hi.toFixed(1)+' kg',8,12);x.fillText(lo.toFixed(1)+' kg',8,h-3)}
-function renderLifts(){const m={};state.workouts.forEach(w=>w.exercises.forEach(e=>{const sets=e.sets.filter(s=>n(s.weight)>0);if(sets.length){(m[e.name]??=[]).push({date:w.date,weight:Math.max(...sets.map(s=>n(s.weight))),reps:sets.map(s=>s.reps).join('/')})}}));const entries=Object.entries(m);$('liftlist').innerHTML=entries.length?entries.map(([name,a])=>`<div class="listitem between"><div><strong>${esc(name)}</strong><div class="small">${dateText(a.at(-1).date)} · Reps ${esc(a.at(-1).reps||'—')}</div></div><strong>${a.at(-1).weight} kg</strong></div>`).join(''):'<div class="empty">Save workouts to track your recent loads.</div>'}
-function renderRecovery(){$('recoverylist').innerHTML=state.recoveries.length?[...state.recoveries].reverse().map(r=>`<div class="listitem"><div class="between"><strong>${dateText(r.date)}</strong><span class="small">${esc(r.sleep||'—')} h sleep</span></div><div class="small">Energy ${r.energy}/5 · Stress ${r.stress}/5 · Soreness ${r.soreness}/5</div>${r.notes?`<p class="small">${esc(r.notes)}</p>`:''}<button class="iconbtn" data-recovery-del="${r.id}">Delete</button></div>`).join(''):'<div class="empty">No recovery check-ins yet.</div>'}
-function renderHome(){const t=totals(today()),c=n(state.settings.calories),p=n(state.settings.protein);$('dcal').textContent=Math.round(t.cal);$('dpro').textContent=Math.round(t.pro)+'g';$('dcalgoal').textContent='of '+c+' kcal';$('dprogoal').textContent='of '+p+' g';bar('dcalbar',t.cal,c);bar('dprobar',t.pro,p);$('dsessions').textContent=state.workouts.length;const a=[...state.workouts].reverse().slice(0,4);$('activity').innerHTML=a.length?a.map(w=>`<div class="listitem between"><strong>${esc(w.type)}</strong><span class="small">${dateText(w.date)}</span></div>`).join(''):'<div class="empty">Your logged workouts will appear here.</div>'}
+function renderFood(){
+ const t=totals($('fdate').value||today()),m=macroTargets();
+ $('ncal').textContent=Math.round(t.cal);
+ $('npro').textContent=Math.round(t.pro);
+ $('ncarb').textContent=Math.round(t.carb);
+ $('nfat').textContent=Math.round(t.fat);
 
-function weekKey(dateStr){
- const d=new Date((dateStr||today())+'T12:00:00');const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);
- return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+ $('ncalgoal').textContent='Target: '+m.calories+' kcal';
+ $('nprogoal').textContent='Target: '+Math.round(m.protein)+' g';
+ $('ncarbgoal').textContent='Target: '+Math.round(m.carbs)+' g';
+ $('nfatgoal').textContent='Target: '+Math.round(m.fat)+' g';
+
+ bar('ncalbar',t.cal,m.calories);
+ bar('nprobar',t.pro,m.protein);
+ bar('ncarbbar',t.carb,m.carbs);
+ bar('nfatbar',t.fat,m.fat);
+
+ $('splitpro').textContent=Math.round(m.protein)+' g';
+ $('splitcarb').textContent=Math.round(m.carbs)+' g';
+ $('splitfat').textContent=Math.round(m.fat)+' g ('+m.fatPercent+'%)';
+
+ const fs=state.foods.filter(f=>f.date===($('fdate').value||today()));
+ $('foodlist').innerHTML=fs.length?fs.map(f=>`<div class="listitem between"><div><strong>${esc(f.name)}</strong><div class="small">${n(f.cal)} kcal · ${n(f.pro)} g protein · ${n(f.carb)} g carbs · ${n(f.fat)} g fat</div></div><button class="iconbtn" data-food-del="${f.id}">✕</button></div>`).join(''):'<div class="empty">No food logged for this date.</div>';
 }
 function workoutDoneSets(w){return (w.exercises||[]).reduce((sum,e)=>sum+(e.sets||[]).filter(s=>s.done).length,0)}
 function workoutDays(){return [...new Set(state.workouts.map(w=>w.date).filter(Boolean))].sort()}
@@ -506,7 +533,17 @@ function challengeCount(data){
  const pDays=[...proteinDays()].filter(x=>weekKey(x)===week).length;
  return d+p+r+(sessions>=4?1:0)+(pDays>=5?1:0)+(data.prCount>0?1:0);
 }
-function render(){renderHome();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderLevelUp();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein}
+function render(){
+ renderHome();
+ renderFood();
+ renderMeasures();
+ renderLifts();
+ renderRecovery();
+ renderWorkoutHistory();
+ $('ctarget').value=state.settings.calories;
+ $('ptarget').value=state.settings.protein;
+ $('fatpercent').value=state.settings.fatPercent||27;
+}
 function init(){const d=today();$('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});['wdate','fdate','mdate','rdate'].forEach(k=>$(k).value=d);$('wtype').value=state.current.type||'Upper A';$('wdate').value=state.current.date||d;$('duration').value=state.current.duration||'';$('wnotes').value=state.current.notes||''}
 function sync(){state.current.type=$('wtype').value;state.current.date=$('wdate').value;state.current.duration=$('duration').value;state.current.notes=$('wnotes').value}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));if(b.dataset.tab==='progress')drawChart([...state.measurements].sort((a,b)=>a.date.localeCompare(b.date)))});
@@ -540,14 +577,43 @@ $('exercises').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.
 $('saveworkout').onclick=()=>{sync();if(!state.current.exercises.length){toast('Load or add exercises first');return}state.workouts.push({id:id(),...JSON.parse(JSON.stringify(state.current)),savedAt:new Date().toISOString()});state.current={type:state.current.type,date:today(),duration:'',notes:'',exercises:[]};init();setPlan(state.current.type);save();toast('Workout saved')};
 $('clearworkout').onclick=()=>{if(confirm('Clear the current unsaved workout?')){state.current.exercises=[];$('wnotes').value='';renderExercises()}};
 $('whistory').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.workDel){state.workouts=state.workouts.filter(w=>w.id!==b.dataset.workDel);save()}if(b.dataset.reload){const w=state.workouts.find(w=>w.id===b.dataset.reload);state.current=JSON.parse(JSON.stringify(w));delete state.current.id;delete state.current.savedAt;init();$('wtype').value=w.type;$('wdate').value=w.date;$('duration').value=w.duration||'';$('wnotes').value=w.notes||'';renderExercises();document.querySelector('[data-tab="training"]').click()}}
-$('addfood').onclick=()=>{if(!$('fname').value.trim()){toast('Enter a food name');return}state.foods.push({id:id(),name:$('fname').value.trim(),cal:n($('fcal').value),pro:n($('fpro').value),date:$('fdate').value||today()});$('fname').value='';$('fcal').value='';$('fpro').value='';save();toast('Food added')};
+$('addfood').onclick=()=>{
+ if(!$('fname').value.trim()){
+  toast('Enter a food name');
+  return;
+ }
+ state.foods.push({
+  id:id(),
+  name:$('fname').value.trim(),
+  cal:n($('fcal').value),
+  pro:n($('fpro').value),
+  carb:n($('fcarb').value),
+  fat:n($('ffat').value),
+  date:$('fdate').value||today()
+ });
+ $('fname').value='';
+ $('fcal').value='';
+ $('fpro').value='';
+ $('fcarb').value='';
+ $('ffat').value='';
+ save();
+ toast('Food added');
+};
 $('fdate').onchange=renderFood;
 $('foodlist').onclick=e=>{const b=e.target.closest('[data-food-del]');if(b){state.foods=state.foods.filter(f=>f.id!==b.dataset.foodDel);save()}};
 $('savemeasure').onclick=()=>{const weight=$('weight').value,waist=$('waist').value;if(weight===''&&waist===''){toast('Enter weight or waist');return}state.measurements.push({id:id(),date:$('mdate').value||today(),weight:weight===''?'':n(weight),waist:waist===''?'':n(waist)});$('weight').value='';$('waist').value='';save();toast('Measurement saved')};
 $('measurelist').onclick=e=>{const b=e.target.closest('[data-measure-del]');if(b){state.measurements=state.measurements.filter(m=>m.id!==b.dataset.measureDel);save()}};
 $('saverecovery').onclick=()=>{state.recoveries.push({id:id(),date:$('rdate').value||today(),sleep:$('sleep').value,energy:$('energy').value,stress:$('stress').value,soreness:$('soreness').value,notes:$('rnotes').value.trim()});$('rnotes').value='';save();toast('Check-in saved')};
 $('recoverylist').onclick=e=>{const b=e.target.closest('[data-recovery-del]');if(b){state.recoveries=state.recoveries.filter(r=>r.id!==b.dataset.recoveryDel);save()}};
-$('savesettings').onclick=()=>{state.settings.calories=Math.max(1,n($('ctarget').value)||2800);state.settings.protein=Math.max(1,n($('ptarget').value)||130);save();toast('Targets saved')};
+$('savesettings').onclick=()=>{
+ state.settings.calories=Math.max(1,n($('ctarget').value)||2800);
+ state.settings.protein=Math.max(1,n($('ptarget').value)||130);
+ state.settings.fatPercent=Math.min(50,Math.max(10,n($('fatpercent').value)||27));
+ save();
+ renderFood();
+ renderHome();
+ toast('Macro targets saved');
+};
 $('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'Apex Protocol',...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='apex-protocol-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)};
 $('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=JSON.parse(await f.text());if(!Array.isArray(v.workouts)||!Array.isArray(v.foods)||!Array.isArray(v.measurements))throw Error();if(confirm('Replace current data with this backup?')){const d=defaults();state={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current}};init();setPlan(state.current.type);save();toast('Backup restored')}}catch{alert('Invalid Apex Protocol backup file')}e.target.value=''};
 $('erase').onclick=()=>{if(confirm('Delete all app records from this browser? Export a backup first if needed.')){state=defaults();localStorage.removeItem(KEY);init();setPlan('Upper A');save();toast('Data cleared')}};
