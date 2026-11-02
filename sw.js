@@ -1,11 +1,12 @@
 
-const CACHE = "apex-protocol-v2";
+const CACHE = "apex-protocol-v3";
 
 const FILES = [
   "./",
   "./index.html",
-  "./manifest.webmanifest"
-  // Add "./icon.svg" here if your app uses that icon.
+  "./manifest.json",
+  "./manifest.webmanifest",
+  "./icon.svg"
 ];
 
 self.addEventListener("install", event => {
@@ -37,17 +38,13 @@ self.addEventListener("fetch", event => {
 
       return fetch(event.request)
         .then(response => {
-          if (
-            response.ok &&
-            new URL(event.request.url).origin === self.location.origin
-          ) {
+          if (response.ok &&
+              new URL(event.request.url).origin === self.location.origin) {
             const copy = response.clone();
-
             caches.open(CACHE).then(cache =>
               cache.put(event.request, copy)
             );
           }
-
           return response;
         })
         .catch(() => caches.match("./index.html"));
