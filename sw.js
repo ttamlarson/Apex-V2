@@ -1,5 +1,5 @@
 
-const CACHE = "apex-protocol-v3";
+const CACHE = "apex-protocol-v4";
 
 const FILES = [
   "./",
