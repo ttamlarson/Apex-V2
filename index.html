@@ -707,10 +707,71 @@ function drawChart(measurements){
  });
 }
  
+function renderWorkoutHistory(){
+ const items=[...state.workouts].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ $('whistory').innerHTML=items.length?items.map(w=>`
+  <div class="listitem">
+   <div class="between">
+    <strong>${esc(w.type||'Workout')}</strong>
+    <span class="small">${dateText(w.date)}</span>
+   </div>
+   <div class="small">${(w.exercises||[]).length} exercises · ${workoutDoneSets(w)} completed sets · ${esc(w.duration||'—')} min</div>
+   <div class="row" style="margin-top:8px">
+    <button class="btn secondary" data-reload="${esc(w.id)}">Reload</button>
+    <button class="btn danger" data-work-del="${esc(w.id)}">Delete</button>
+   </div>
+  </div>
+ `).join(''):'<div class="empty">No workouts saved yet.</div>';
+}
+
+function renderMeasurements(){
+ const items=[...state.measurements].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ $('measurelist').innerHTML=items.length?items.map(m=>`
+  <div class="listitem between">
+   <div>
+    <strong>${m.weight!==''?esc(m.weight)+' kg':'Weight not recorded'}</strong>
+    <div class="small">${dateText(m.date)}${m.waist!==''?' · Waist '+esc(m.waist)+' cm':''}</div>
+   </div>
+   <button class="iconbtn" data-measure-del="${esc(m.id)}">✕</button>
+  </div>
+ `).join(''):'<div class="empty">No measurements yet.</div>';
+}
+
+function renderRecovery(){
+ const items=[...state.recoveries].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ $('recoverylist').innerHTML=items.length?items.map(r=>`
+  <div class="listitem">
+   <div class="between">
+    <strong>${dateText(r.date)}</strong>
+    <button class="iconbtn" data-recovery-del="${esc(r.id)}">✕</button>
+   </div>
+   <div class="small">Sleep: ${esc(r.sleep||'—')} hours · Energy: ${esc(r.energy||'—')}/5 · Stress: ${esc(r.stress||'—')}/5 · Soreness: ${esc(r.soreness||'—')}/5</div>
+   ${r.notes?`<div class="small">${esc(r.notes)}</div>`:''}
+  </div>
+ `).join(''):'<div class="empty">No check-ins yet.</div>';
+}
+
+function renderLifts(){
+ const items=personalRecords().sort((a,b)=>a.name.localeCompare(b.name));
+ $('liftlist').innerHTML=items.length?items.map(p=>`
+  <div class="listitem between">
+   <div>
+    <strong>${esc(p.name)}</strong>
+    <div class="small">Best: ${esc(p.weight)} kg · ${dateText(p.date)}</div>
+   </div>
+  </div>
+ `).join(''):'<div class="empty">Save completed, weighted sets to see your best lifts.</div>';
+}
+
 function render(){
  renderHome();
  renderFood();
  renderLevelUp();
+ renderWorkoutHistory();
+ renderMeasurements();
+ renderRecovery();
+ renderLifts();
+ drawChart([...state.measurements]);
  $('ctarget').value=state.settings.calories;
  $('ptarget').value=state.settings.protein;
  $('fatpercent').value=state.settings.fatPercent||27;
