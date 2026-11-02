@@ -205,17 +205,76 @@ footer{text-align:center;color:#707780;font-size:10px;letter-spacing:.12em;margi
 
 <section class="view" id="nutrition">
  <div class="eyebrow">FUEL THE WORK</div><h2>Nutrition</h2>
+
  <div class="grid two">
-  <div class="card"><div class="small">CALORIES</div><div class="metric"><span id="ncal">0</span> <span class="small">kcal</span></div><div class="bar"><span id="ncalbar"></span></div><div class="small" id="ncalgoal">Target: 2800</div></div>
-  <div class="card"><div class="small">PROTEIN</div><div class="metric"><span id="npro">0</span> <span class="small">g</span></div><div class="bar"><span id="nprobar"></span></div><div class="small" id="nprogoal">Target: 130</div></div>
+  <div class="card">
+   <div class="small">CALORIES</div>
+   <div class="metric"><span id="ncal">0</span> <span class="small">kcal</span></div>
+   <div class="bar"><span id="ncalbar"></span></div>
+   <div class="small" id="ncalgoal">Target: 2800 kcal</div>
+  </div>
+  <div class="card">
+   <div class="small">PROTEIN</div>
+   <div class="metric"><span id="npro">0</span> <span class="small">g</span></div>
+   <div class="bar"><span id="nprobar"></span></div>
+   <div class="small" id="nprogoal">Target: 130 g</div>
+  </div>
+  <div class="card">
+   <div class="small">CARBS</div>
+   <div class="metric"><span id="ncarb">0</span> <span class="small">g</span></div>
+   <div class="bar"><span id="ncarbbar"></span></div>
+   <div class="small" id="ncarbgoal">Target: calculated</div>
+  </div>
+  <div class="card">
+   <div class="small">FAT</div>
+   <div class="metric"><span id="nfat">0</span> <span class="small">g</span></div>
+   <div class="bar"><span id="nfatbar"></span></div>
+   <div class="small" id="nfatgoal">Target: calculated</div>
+  </div>
  </div>
- <div class="card"><h3>Add food or meal</h3><div class="formgrid">
-  <div class="field" style="grid-column:span 2"><label>Food / meal</label><input id="fname" placeholder="Chicken and rice"></div>
-  <div class="field"><label>Calories (kcal)</label><input id="fcal" type="number" min="0" placeholder="500"></div>
-  <div class="field"><label>Protein (g)</label><input id="fpro" type="number" min="0" step=".1" placeholder="35"></div>
-  <div class="field"><label>Date</label><input id="fdate" type="date"></div>
- </div><button class="btn" id="addfood" style="margin-top:12px">Add food</button></div>
- <h3 class="section-title">Food log</h3><div class="card" id="foodlist"><div class="empty">No food logged for this date.</div></div>
+
+ <div class="card">
+  <h3>Daily macro split</h3>
+  <div class="between"><span>Protein</span><strong id="splitpro">130 g</strong></div>
+  <div class="between"><span>Carbs</span><strong id="splitcarb">Calculated</strong></div>
+  <div class="between"><span>Fat</span><strong id="splitfat">Calculated</strong></div>
+ </div>
+
+ <div class="card">
+  <h3>Add food or meal</h3>
+  <div class="formgrid">
+   <div class="field" style="grid-column:span 2">
+    <label>Food / meal</label>
+    <input id="fname" placeholder="Chicken and rice">
+   </div>
+   <div class="field">
+    <label>Calories (kcal)</label>
+    <input id="fcal" type="number" min="0" placeholder="500">
+   </div>
+   <div class="field">
+    <label>Protein (g)</label>
+    <input id="fpro" type="number" min="0" step=".1" placeholder="35">
+   </div>
+   <div class="field">
+    <label>Carbs (g)</label>
+    <input id="fcarb" type="number" min="0" step=".1" placeholder="60">
+   </div>
+   <div class="field">
+    <label>Fat (g)</label>
+    <input id="ffat" type="number" min="0" step=".1" placeholder="15">
+   </div>
+   <div class="field">
+    <label>Date</label>
+    <input id="fdate" type="date">
+   </div>
+  </div>
+  <button class="btn" id="addfood" style="margin-top:12px">Add food</button>
+ </div>
+
+ <h3 class="section-title">Food log</h3>
+ <div class="card" id="foodlist">
+  <div class="empty">No food logged for this date.</div>
+ </div>
 </section>
 
 <section class="view" id="progress">
