@@ -363,8 +363,22 @@ function renderExercises(){
  const el=$('exercises');
  if(!state.current.exercises.length){el.innerHTML='<div class="empty">Load a workout or add your own exercise.</div>';return}
  el.innerHTML=state.current.exercises.map(e=>`<div class="exercise"><div class="between"><div style="flex:1"><input data-name="${e.id}" value="${esc(e.name)}" aria-label="Exercise name" placeholder="Exercise name"><div class="small" style="margin-top:5px">Target reps: ${esc(e.target)}</div></div><button class="iconbtn" data-remove="${e.id}">✕</button></div><div class="setrow"><span class="small">SET</span><span class="small">WEIGHT (kg)</span><span class="small">REPS</span><span></span></div>${e.sets.map((s,i)=>`<div class="setrow"><span class="small">${i+1}</span><input type="number" min="0" step=".25" data-set="${e.id}" data-i="${i}" data-key="weight" value="${esc(s.weight)}" placeholder="kg" aria-label="Weight"><input type="number" min="0" data-set="${e.id}" data-i="${i}" data-key="reps" value="${esc(s.reps)}" placeholder="reps" aria-label="Reps"><button class="iconbtn" data-done="${e.id}" data-i="${i}" style="color:${s.done?'var(--green)':'var(--muted)'}">${s.done?'✓':'○'}</button></div>`).join('')}<div class="row" style="margin-top:9px"><button class="btn secondary" data-addset="${e.id}">+ Set</button><button class="btn secondary" data-rest>Start rest</button></div></div>`).join('');
+}function totals(date){
+ let cal=0;
+ let pro=0;
+ const foods=Array.isArray(state.foods)?state.foods:[];
+ for(const f of foods){
+  if(!f||f.date!==date) continue;
+  const cv=Number.parseFloat(f.cal);
+  const pv=Number.parseFloat(f.pro);
+  cal+=Number.isFinite(cv)?cv:0;
+  pro+=Number.isFinite(pv)?pv:0;
+ }
+ return {
+  cal:Number.isFinite(cal)?cal:0,
+  pro:Number.isFinite(pro)?pro:0
+ };
 }
-function totals(date){return state.foods.filter(f=>f.date===date).reduce((a,f)=>({cal:a+n(f.cal),pro:a+n(f.pro)}),{cal:0,pro:0})}
 function bar(id,val,target){$(id).style.width=Math.min(100,target?Math.max(0,val/target*100):0)+'%'}
 function renderFood(){const t=totals($('fdate').value||today()),c=n(state.settings.calories),p=n(state.settings.protein);$('ncal').textContent=Math.round(t.cal);$('npro').textContent=Math.round(t.pro);$('ncalgoal').textContent='Target: '+c+' kcal';$('nprogoal').textContent='Target: '+p+' g';bar('ncalbar',t.cal,c);bar('nprobar',t.pro,p);const fs=state.foods.filter(f=>f.date===($('fdate').value||today()));$('foodlist').innerHTML=fs.length?fs.map(f=>`<div class="listitem between"><div><strong>${esc(f.name)}</strong><div class="small">${n(f.cal)} kcal · ${n(f.pro)} g protein</div></div><button class="iconbtn" data-food-del="${f.id}">✕</button></div>`).join(''):'<div class="empty">No food logged for this date.</div>'}
 function renderWorkoutHistory(){$('whistory').innerHTML=state.workouts.length?[...state.workouts].reverse().map(w=>`<div class="listitem"><div class="between"><strong>${esc(w.type)}</strong><span class="small">${dateText(w.date)}</span></div><div class="small">${w.exercises.length} exercises · ${w.exercises.reduce((a,e)=>a+e.sets.filter(s=>s.done).length,0)} sets completed${w.duration?' · '+esc(w.duration)+' min':''}</div>${w.notes?`<p class="small">${esc(w.notes)}</p>`:''}<div class="row"><button class="btn secondary" data-reload="${w.id}">Load again</button><button class="btn danger" data-work-del="${w.id}">Delete</button></div></div>`).join(''):'<div class="empty">No workouts saved yet.</div>'}
