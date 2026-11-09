@@ -1017,6 +1017,31 @@ init();setPlan(state.current.type||'Upper A');render();
          })
          .catch(error => console.warn('Apex update check unavailable:', error));
      });
+    </script>
+
+<script src="./update.js"></script>
+
+<script>
+
+if ('serviceWorker' in navigator && !(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())) {
+
+  window.addEventListener('load', () => {
+
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+
+      .then(registration => {
+
+        if (window.ApexUpdateManager) window.ApexUpdateManager.init(registration);
+
+      })
+
+      .catch(error => console.warn('Apex update check unavailable:', error));
+
+  });
+
+}
+
+</script>
    }
    </script>
 </body>
