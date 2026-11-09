@@ -1,4 +1,4 @@
-const CACHE_NAME = "apex-protocol-v2-shell-2026-11-09";
+const CACHE_NAME = "apex-protocol-v2-shell-2026-11-09-barcode";
 const CORE = [
   "./",
   "./index.html",
