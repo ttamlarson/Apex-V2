@@ -1,6 +1,0 @@
-{
-  "app": "Apex Protocol",
-  "version": "2.0.1",
-  "releaseDate": "2026-11-09",
-  "notes": "Adds staged PWA updates, an in-app update prompt, and version display."
-}
