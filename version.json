@@ -1,0 +1,6 @@
+{
+  "app": "Apex Protocol",
+  "version": "2.1.0",
+  "releaseDate": "2026-11-12",
+  "notes": "Adds nutrition macro tracking with adjustable targets and safe legacy record handling."
+}
