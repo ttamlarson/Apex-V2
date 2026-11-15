@@ -13,6 +13,7 @@ const CORE = [
   "./apple-touch-icon.png",
   "./icon-192.png",
   "./icon-512.png",
+  "./apex-mountain.svg",
   "./apex-mountain-inverse.svg",
   "./apex-full-logo.svg",
   "./apex-wordmark.svg",
