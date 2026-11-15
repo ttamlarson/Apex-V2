@@ -1,6 +1,6 @@
 {
   "app": "Apex Protocol",
-  "version": "2.1.0",
-  "releaseDate": "2026-11-12",
-  "notes": "Adds nutrition macro tracking with adjustable targets and safe legacy record handling."
+  "version": "2.2.0",
+  "releaseDate": "2026-11-15",
+  "notes": "Introduces the supplied monochrome Apex Protocol identity, updated emblem and PWA shell. Existing local training and nutrition records are retained."
 }
