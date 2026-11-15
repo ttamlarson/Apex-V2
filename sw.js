@@ -1,7 +1,7 @@
 /* Apex Protocol service worker — versioned cache.
  * Updates wait until the user accepts them in the app.
  */
-const CACHE_NAME = "apex-protocol-v2-shell-2.1.0";
+const CACHE_NAME = "apex-protocol-v2-shell-2.2.0";
 const CACHE_PREFIX = "apex-protocol-v2-shell-";
 const CORE = [
   "./",
@@ -12,7 +12,12 @@ const CORE = [
   "./icon.svg",
   "./apple-touch-icon.png",
   "./icon-192.png",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./apex-mountain-inverse.svg",
+  "./apex-full-logo.svg",
+  "./apex-wordmark.svg",
+  "./apex-compact-logo.svg",
+  "./apex-stencil.svg"
 ];
 
 self.addEventListener("install", event => {

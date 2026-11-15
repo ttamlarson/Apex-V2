@@ -14,7 +14,7 @@
 <meta name="description" content="Apex Protocol — training, nutrition and recovery tracker">
 <title>Apex Protocol</title>
 <style>
-:root{color-scheme:dark;--bg:#0b0c0e;--panel:#15171a;--line:#30343a;--text:#f3f4f6;--muted:#a0a5ad;--silver:#d8dde3;--green:#8ed6aa}
+:root{color-scheme:dark;--bg:#000000;--panel:#171717;--line:#303030;--text:#ffffff;--muted:#a6a6a6;--silver:#a6a6a6;--green:#8ed6aa}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,sans-serif}
 button,input,select,textarea{font:inherit}
@@ -22,7 +22,7 @@ button{cursor:pointer}
 .app{max-width:1050px;margin:auto;padding:18px 14px 60px}
 header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .brand{display:flex;align-items:center;gap:12px}
-.logo{width:46px;height:46px;border:1px solid #777e87;border-radius:13px;display:grid;place-items:center;font-size:26px;font-weight:900;background:linear-gradient(145deg,#333840,#101113)}
+.logo-mark{width:52px;height:46px;object-fit:contain;display:block;flex:0 0 auto}
 .eyebrow{font-size:10px;letter-spacing:.22em;color:var(--muted);font-weight:800}
 h1{font-size:19px;letter-spacing:.08em;margin:2px 0}
 h2{font-size:26px;margin:8px 0 14px}
@@ -92,7 +92,7 @@ footer{text-align:center;color:#707780;font-size:10px;letter-spacing:.12em;margi
 <body>
 <div class="app">
 <header>
- <div class="brand"><div class="logo">A</div><div><div class="eyebrow">YOUR TRAINING SYSTEM</div><h1>APEX PROTOCOL</h1></div></div>
+ <div class="brand"><img class="logo-mark" src="./apex-mountain-inverse.svg" alt="Apex mountain emblem"><div><div class="eyebrow">YOUR TRAINING SYSTEM</div><h1>APEX PROTOCOL</h1></div></div>
  <div class="small" id="today"></div>
 </header>
 
