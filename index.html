@@ -32,7 +32,7 @@ nav{display:flex;gap:7px;overflow:auto;margin-bottom:18px;padding-bottom:4px}
 nav button{white-space:nowrap;border:1px solid var(--line);background:transparent;color:var(--muted);padding:10px 13px;border-radius:12px}
 nav button.active{background:var(--silver);color:#101114;font-weight:800}
 .view{display:none}.view.active{display:block}
-.hero{padding:25px;border:1px solid var(--line);border-radius:22px;background:radial-gradient(ellipse at top right,#30343b,#17191c 55%,#111214);margin-bottom:14px}
+.hero{padding:25px;border:1px solid var(--line);border-radius:22px;background:radial-gradient(ellipse at top right,var(--hero-glow),var(--panel) 55%,var(--bg));margin-bottom:14px}
 .hero h2{font-size:clamp(30px,6vw,43px);line-height:1.05;letter-spacing:-.04em}
 .hero p{max-width:580px}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
@@ -40,26 +40,26 @@ nav button.active{background:var(--silver);color:#101114;font-weight:800}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:16px;margin-bottom:12px;min-width:0}
 .metric{font-size:27px;font-weight:850;letter-spacing:-.04em}
 .small{font-size:12px;color:var(--muted)}
-.bar{height:6px;background:#30343a;border-radius:9px;overflow:hidden;margin:10px 0}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin:10px 0}
 .bar span{display:block;height:100%;background:var(--silver);width:0}
 .btn{border:1px solid #e0e3e7;background:var(--silver);color:#101114;border-radius:10px;padding:10px 13px;font-weight:750}
-.btn.secondary{background:#22252a;color:var(--text);border-color:#40454d}
+.btn.secondary{background:var(--surface-2);color:var(--text);border-color:var(--line)}
 .btn.danger{background:#381c20;color:#ffced1;border-color:#603038}
 .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .between{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .field{display:flex;flex-direction:column;gap:5px;min-width:0}
 .field label{font-size:12px;color:var(--muted)}
-input,select,textarea{width:100%;min-width:0;background:#0c0e10;border:1px solid #383d44;border-radius:9px;padding:10px;color:var(--text)}
+input,select,textarea{width:100%;min-width:0;background:var(--input-bg);border:1px solid #383d44;border-radius:9px;padding:10px;color:var(--text)}
 .formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .section-title{margin:22px 0 10px}
-.exercise{background:#101214;border:1px solid var(--line);padding:13px;border-radius:13px;margin:10px 0}
+.exercise{background:var(--surface);border:1px solid var(--line);padding:13px;border-radius:13px;margin:10px 0}
 .setrow{display:grid;grid-template-columns:32px 1fr 1fr 35px;gap:7px;align-items:center;margin-top:8px}
 .setrow input{padding:8px}
 .iconbtn{background:#24272c;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px}
 .listitem{padding:12px 0;border-bottom:1px solid var(--line)}
 .listitem:last-child{border-bottom:0}
 .empty{padding:18px;text-align:center;color:var(--muted);border:1px dashed #383d44;border-radius:11px}
-.notice{background:#1d2024;border-radius:11px;padding:12px;color:#c4c8ce;font-size:12px;margin:12px 0}
+.notice{background:var(--surface-2);border-radius:11px;padding:12px;color:#c4c8ce;font-size:12px;margin:12px 0}
 .pill{border:1px solid #454b54;border-radius:99px;padding:4px 8px;font-size:10px;letter-spacing:.08em;color:#d4d9df}
 .timer{font-size:42px;font-weight:850;font-variant-numeric:tabular-nums}
 .history{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
@@ -90,6 +90,19 @@ footer{text-align:center;color:#707780;font-size:10px;letter-spacing:.12em;margi
 #scannerOverlay h3{margin:0 0 12px;color:#fff}
 #reader{width:min(100%,360px);border-radius:12px;overflow:hidden}
 #scannerOverlay .row{margin-top:14px}
+
+/* Selectable colour themes */
+:root{--surface:#101214;--surface-2:#22252a;--input-bg:#0c0e10;--hero-glow:#30343b}
+body[data-theme="midnight"]{--bg:#07111f;--panel:#101e31;--line:#263b55;--text:#f1f6ff;--muted:#9db1cc;--silver:#58a6ff;--surface:#0b192b;--surface-2:#172b43;--input-bg:#091626;--hero-glow:#1d4268;--green:#75d6ad}
+body[data-theme="forest"]{--bg:#07130f;--panel:#10231b;--line:#294638;--text:#f0faf3;--muted:#a4c0ad;--silver:#78c69a;--surface:#0b1b14;--surface-2:#193326;--input-bg:#091710;--hero-glow:#28563d;--green:#8de0a8}
+body[data-theme="ember"]{--bg:#160c0a;--panel:#281714;--line:#56342b;--text:#fff4ee;--muted:#c9a69a;--silver:#ef936c;--surface:#20110e;--surface-2:#39221c;--input-bg:#190d0a;--hero-glow:#713a27;--green:#b7d98b}
+body[data-theme="light"]{color-scheme:light;--bg:#f2f4f7;--panel:#fff;--line:#d8dee7;--text:#18202b;--muted:#667386;--silver:#263b55;--surface:#f8fafc;--surface-2:#e9eef4;--input-bg:#fff;--hero-glow:#d9e3ef;--green:#238653}
+body[data-theme="light"] nav button.active{color:#fff}
+body[data-theme="light"] .btn{border-color:#263b55}
+body[data-theme="light"] .btn.secondary{color:var(--text)}
+body[data-theme="light"] .pill{color:var(--text);border-color:var(--line)}
+body[data-theme="light"] .notice{color:var(--text)}
+body[data-theme="light"] #toast{background:#18202b;color:#fff}
 </style>
 </head>
 <body>
@@ -280,6 +293,7 @@ footer{text-align:center;color:#707780;font-size:10px;letter-spacing:.12em;margi
   <div class="field"><label>Protein (g)</label><input id="ptarget" type="number" min="1" value="130"></div>
   <div class="field"><label>Fat target (% of calories)</label><input id="fatpercent" type="number" min="10" max="50" step="1" value="27"></div>
  </div><button class="btn" id="savesettings" style="margin-top:12px">Save targets</button></div>
+ <div class="card"><h3>Appearance</h3><p>Choose the colour scheme used across Apex on this device. Your selection is saved with your app settings.</p><div class="field"><label for="themeSelect">App theme</label><select id="themeSelect"><option value="apex">Apex Black</option><option value="midnight">Midnight Blue</option><option value="forest">Forest Green</option><option value="ember">Ember</option><option value="light">Light</option></select></div><div class="small" id="themeDescription" style="margin-top:8px">Apex Black · the original monochrome brand theme.</div></div>
  <div class="card"><h3>Backup & restore</h3>
  <p>Records are stored locally in this browser. Export regularly and keep a copy in iCloud, Google Drive, or email so you can restore on another device.</p>
  <div class="row">
@@ -587,6 +601,7 @@ function macroTargets(){
  const carbs=Number.isFinite(remaining)?Math.max(0,remaining/4):0;
  return {calories,protein,fat,carbs,fatPercent};
 }
+function applyTheme(theme){const allowed=['apex','midnight','forest','ember','light'];const selected=allowed.includes(theme)?theme:'apex';document.body.dataset.theme=selected;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=selected==='light'?'#f2f4f7':selected==='midnight'?'#07111f':selected==='forest'?'#07130f':selected==='ember'?'#160c0a':'#000000';const picker=$('themeSelect');if(picker)picker.value=selected;const descriptions={apex:'Apex Black · the original monochrome brand theme.',midnight:'Midnight Blue · cool blue accents with a deep navy interface.',forest:'Forest Green · muted green accents and deep natural tones.',ember:'Ember · warm copper accents with a dark charcoal-red interface.',light:'Light · a clean bright interface for daytime use.'};const description=$('themeDescription');if(description)description.textContent=descriptions[selected]}
 function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
 // Persist without re-rendering (keeps input focus while typing)
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
@@ -726,6 +741,7 @@ function renderAnalytics(){
 }
 function render(){renderHome();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderRoutines();renderAnalytics();renderCardio();populateFoodLib();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein;$('fatpercent').value=state.settings.fatPercent||27}
 function init(){
+ applyTheme(state.settings.theme||'apex');
  const d=today();
  $('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
  ['wdate','fdate','mdate','rdate','cdate'].forEach(k=>{if($(k))$(k).value=d});
@@ -862,6 +878,7 @@ $('measurelist').onclick=e=>{const b=e.target.closest('[data-measure-del]');if(b
 $('saverecovery').onclick=()=>{state.recoveries.push({id:id(),date:$('rdate').value||today(),sleep:$('sleep').value,energy:$('energy').value,stress:$('stress').value,soreness:$('soreness').value,notes:$('rnotes').value.trim()});$('rnotes').value='';save();toast('Check-in saved')};
 $('recoverylist').onclick=e=>{const b=e.target.closest('[data-recovery-del]');if(b){state.recoveries=state.recoveries.filter(r=>r.id!==b.dataset.recoveryDel);save()}};
 $('savesettings').onclick=()=>{state.settings.calories=Math.max(1,n($('ctarget').value)||2800);state.settings.protein=Math.max(1,n($('ptarget').value)||130);state.settings.fatPercent=Math.min(50,Math.max(10,n($('fatpercent').value)||27));save();toast('Macro targets saved')};
+$('themeSelect').onchange=()=>{state.settings.theme=$('themeSelect').value;applyTheme(state.settings.theme);persist();toast('Theme updated')};
 $('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'Apex Protocol',...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='apex-protocol-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)};
 $('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=window.Apex?Apex.validateBackup(await f.text()):JSON.parse(await f.text());if(!Array.isArray(v.workouts)||!Array.isArray(v.foods)||!Array.isArray(v.measurements)||!Array.isArray(v.recoveries||[])||!Array.isArray(v.routines||[]))throw Error();if(confirm('Replace current data with this backup? A safety copy of your current data is saved first.')){if(window.Apex)Apex.savePreImportCopy();const d=defaults();state={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current},workouts:v.workouts,foods:v.foods,measurements:v.measurements,recoveries:v.recoveries||[],routines:v.routines||[],cardio:v.cardio||[]};init();setPlan(state.current.type);save();toast('Backup restored')}}catch{alert('Invalid Apex Protocol backup file')}e.target.value=''};
 

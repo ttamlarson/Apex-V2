@@ -3,7 +3,7 @@
  * service worker and only activated after the user taps Update.
  */
 (() => {
-  const APP_VERSION = "2.2.1";
+  const APP_VERSION = "2.3.0";
   let registration = null;
   let reloading = false;
 

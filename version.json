@@ -1,6 +1,6 @@
 {
   "app": "Apex Protocol",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "releaseDate": "2026-11-15",
-  "notes": "Fixes Cardio date input sizing to match Training and refreshes the PWA cache. Existing local training, nutrition and workout records are retained."
+  "notes": "Adds five selectable colour themes: Apex Black, Midnight Blue, Forest Green, Ember and Light. Theme preference is stored locally; existing training, nutrition and progress records are retained."
 }
