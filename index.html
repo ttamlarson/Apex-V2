@@ -90,6 +90,19 @@ footer{text-align:center;color:#707780;font-size:10px;letter-spacing:.12em;margi
 #scannerOverlay h3{margin:0 0 12px;color:#fff}
 #reader{width:min(100%,360px);border-radius:12px;overflow:hidden}
 #scannerOverlay .row{margin-top:14px}
+.scan-shell{width:min(100%,520px);max-height:92dvh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px}
+.scan-shell h3{margin:2px 0;color:var(--text)}
+#scannerOverlay p{margin:8px 0}
+#reader{width:100%;max-width:100%;border-radius:12px;overflow:hidden;background:#000}
+#reader video{object-fit:cover}
+.scan-result{margin:12px 0;padding:12px}
+#scanProductName{font-weight:800;margin:6px 0}
+#scanNutrition{gap:7px;margin:10px 0}
+.scan-nutrient{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px}
+.scan-nutrient strong{display:block;font-size:18px}
+.scan-nutrient span{font-size:11px;color:var(--muted)}
+#scannerOverlay .btn:disabled{opacity:.45;cursor:not-allowed}
+#scannerOverlay .iconbtn{min-width:40px;min-height:40px}
 
 /* Selectable colour themes */
 :root{--surface:#101214;--surface-2:#22252a;--input-bg:#0c0e10;--hero-glow:#30343b}
@@ -308,10 +321,15 @@ body[data-theme="light"] #toast{background:#18202b;color:#fff}
 </section>
 <footer>APEX PROTOCOL · TRAIN WITH PURPOSE. BUILD WITH DISCIPLINE.</footer>
 </div>
-<div id="scannerOverlay" class="hidden" role="dialog" aria-label="Barcode scanner">
-  <h3>Scan barcode</h3>
-  <div id="reader"></div>
-  <div class="row"><button class="btn secondary" type="button" id="closeScanner">Close</button></div>
+<div id="scannerOverlay" class="hidden" role="dialog" aria-modal="true" aria-label="Apex Scan Centre">
+  <div class="scan-shell">
+    <div class="between"><div><div class="eyebrow">APEX PROTOCOL</div><h3>Scan Centre</h3></div><button class="iconbtn" type="button" id="closeScanner" aria-label="Close scanner">✕</button></div>
+    <p class="small" id="scannerStatus">Starting camera…</p>
+    <div id="reader"></div>
+    <div class="scan-result card" id="scanResult"><div class="small">PRODUCT DETAILS</div><div id="scanProductName">Point the camera at a product barcode.</div><div class="small" id="scanProductMeta"></div><div class="grid two" id="scanNutrition"></div><div class="small" id="scanExtra"></div></div>
+    <div class="row"><button class="btn" type="button" id="scanAgain" disabled>Scan another</button><button class="btn secondary" type="button" id="useScannedProduct" disabled>Use in food log</button></div>
+    <p class="small">Camera access is controlled by your browser. Apex keeps the scanner session open between scans; close it when finished.</p>
+  </div>
 </div>
 <div id="toast" class="hidden" role="status"></div>
 
@@ -442,7 +460,7 @@ async function lookupBarcode(code){
       ? 'Values per 100 g. Enter the known consumed amount in grams before adding; no serving size is assumed.'
       : 'Values '+basis+'. Missing nutrients are not recorded; review values before adding.';
     toast('Product loaded');
-    return {name,...values,basis:barcodeBasis};
+    return {name,...values,nutrients:values,code:cleaned,brands:p.brands||'',quantity:p.quantity||'',serving_size:p.serving_size||'',nutritionGrade:p.nutriscore_grade||p.nutrition_grade_fr||'',categories:(p.categories_tags||[]).slice(0,4).map(x=>x.replace(/^en:/,'').replace(/-/g,' ')).join(', '),allergens:(p.allergens_tags||[]).slice(0,5).map(x=>x.replace(/^en:/,'')).join(', '),ingredients:p.ingredients_text?String(p.ingredients_text).slice(0,240):'',basis:barcodeBasis};
   }catch(err){
     if(status) status.textContent='Lookup failed. Check connection or enter manually.';
     toast('Lookup failed');
@@ -451,43 +469,81 @@ async function lookupBarcode(code){
 }
 
 let html5QrCode = null;
-async function startScanner(){
-  if(typeof Html5Qrcode === 'undefined'){
-    toast('Scanner library not loaded');
-    return;
+let scannerRunning = false;
+let scanLocked = false;
+let lastScannedProduct = null;
+function setScannerStatus(message){$('scannerStatus').textContent=message}
+function showScanProduct(product,code){
+  lastScannedProduct=product;
+  $('scanProductName').textContent=product.name||('Barcode '+code);
+  $('scanProductMeta').textContent=[product.brands,product.quantity,product.serving_size].filter(Boolean).join(' · ')||('Barcode '+code);
+  const nutrients=product.nutrients||{};
+  $('scanNutrition').innerHTML=[
+    ['Calories',nutrients.cal,'kcal'],['Protein',nutrients.pro,'g'],
+    ['Carbs',nutrients.carb,'g'],['Fat',nutrients.fat,'g']
+  ].map(([label,value,unit])=>'<div class="scan-nutrient"><span>'+label+'</span><strong>'+(value===''||value==null?'—':esc(value)+' '+unit)+'</strong></div>').join('');
+  $('scanExtra').textContent=[
+    product.nutritionGrade?('Nutri-Score '+product.nutritionGrade.toUpperCase()):'',
+    product.categories?('Categories: '+product.categories):'',
+    product.allergens?('Allergens: '+product.allergens):'',
+    product.ingredients?('Ingredients: '+product.ingredients):''
+  ].filter(Boolean).join(' · ')||'Nutrition information supplied by Open Food Facts; check the package label.';
+  $('scanAgain').disabled=false;$('useScannedProduct').disabled=false;
+}
+async function handleBarcode(decoded){
+  if(scanLocked)return;
+  const code=String(decoded||'').replace(/\D/g,'');
+  if(code.length<8){setScannerStatus('Barcode detected but not recognised. Hold steady and try again.');return}
+  scanLocked=true;$('scanAgain').disabled=true;$('useScannedProduct').disabled=true;
+  setScannerStatus('Barcode '+code+' detected — retrieving product details…');
+  $('fbarcode').value=code;
+  const result=await lookupBarcode(code);
+  if(result){
+    showScanProduct(result,code);
+    setScannerStatus('Product loaded. Camera remains active — scan another item or use this one.');
+  }else{
+    lastScannedProduct=null;
+    $('scanProductName').textContent='Product not found in the database';
+    $('scanProductMeta').textContent='You can still enter the barcode or nutrition values manually.';
+    $('scanNutrition').innerHTML='';$('scanExtra').textContent='';
+    $('scanAgain').disabled=false;
+    setScannerStatus('No product match. Camera remains active.');
   }
-  const overlay=$('scannerOverlay');
-  overlay.classList.remove('hidden');
+}
+async function startScanner(){
+  if(typeof Html5Qrcode === 'undefined'){toast('Scanner library not loaded');return}
+  const overlay=$('scannerOverlay');overlay.classList.remove('hidden');
+  scanLocked=false;lastScannedProduct=null;
+  $('scanProductName').textContent='Point the camera at a product barcode.';
+  $('scanProductMeta').textContent='';$('scanNutrition').innerHTML='';$('scanExtra').textContent='';
+  $('scanAgain').disabled=true;$('useScannedProduct').disabled=true;
   try{
-    html5QrCode = new Html5Qrcode('reader');
-    await html5QrCode.start(
-      { facingMode: 'environment' },
-      { fps: 8, qrbox: { width: 260, height: 160 } },
-      async (decoded) => {
-        const code = String(decoded).replace(/\D/g,'') || decoded;
-        await stopScanner();
-        $('fbarcode').value = code;
-        await lookupBarcode(code);
-      },
-      () => {}
-    );
+    if(!html5QrCode)html5QrCode=new Html5Qrcode('reader');
+    if(!scannerRunning){
+      setScannerStatus('Allow camera access if your browser asks. Apex will keep this scan session open.');
+      await html5QrCode.start(
+        {facingMode:'environment'},
+        {fps:10,qrbox:(viewWidth,viewHeight)=>({width:Math.min(340,Math.floor(viewWidth*.88)),height:Math.min(170,Math.floor(viewHeight*.42))}),aspectRatio:1.777,disableFlip:true},
+        handleBarcode,
+        ()=>{}
+      );
+      scannerRunning=true;
+    }else setScannerStatus('Camera ready — point it at a barcode.');
   }catch(err){
     overlay.classList.add('hidden');
-    toast('Camera unavailable — use manual barcode entry');
-    console.error(err);
+    const message=err&&err.name==='NotAllowedError'?'Camera permission denied. Enable camera access for this site in iPhone Settings.':'Camera unavailable — check browser permission or enter the barcode manually.';
+    toast(message);console.error('Apex scanner:',err);
   }
 }
 async function stopScanner(){
   const overlay=$('scannerOverlay');
-  try{
-    if(html5QrCode){
-      await html5QrCode.stop();
-      await html5QrCode.clear();
-    }
-  }catch(e){}
-  html5QrCode = null;
-  if(overlay) overlay.classList.add('hidden');
+  if(scannerRunning&&html5QrCode){
+    try{await html5QrCode.stop();scannerRunning=false}catch(e){console.warn('Scanner stop:',e)}
+  }
+  if(overlay)overlay.classList.add('hidden');
 }
+$('scanAgain').onclick=()=>{scanLocked=false;lastScannedProduct=null;$('scanAgain').disabled=true;$('useScannedProduct').disabled=true;setScannerStatus('Ready — point the camera at the next barcode.');$('scanProductName').textContent='Ready for next product';$('scanProductMeta').textContent='';$('scanNutrition').innerHTML='';$('scanExtra').textContent=''};
+$('useScannedProduct').onclick=()=>{if(!lastScannedProduct)return;$('fbarcode').value=lastScannedProduct.code||$('fbarcode').value;setScannerStatus('Product details are loaded in the food form.');stopScanner();toast('Review the nutrition values, then add food')};
 
 function suggestOverload(last){
   if(!last) return '';
@@ -925,6 +981,7 @@ $('lookupBarcode').onclick=()=>lookupBarcode($('fbarcode').value);
 $('fbarcode').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); lookupBarcode($('fbarcode').value); }});
 $('scanBarcode').onclick=()=>startScanner();
 $('closeScanner').onclick=()=>stopScanner();
+$('useScannedProduct').onclick=()=>{if(!lastScannedProduct)return;stopScanner();toast('Review the loaded food details, then add food')};
 
 // Home: start saved routine / template
 document.addEventListener('click',e=>{
