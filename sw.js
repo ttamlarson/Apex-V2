@@ -1,7 +1,7 @@
-/* Apex Protocol service worker — versioned cache.
+/* KINETIQ service worker — versioned cache.
  * Updates wait until the user accepts them in the app.
  */
-const CACHE_NAME = "apex-protocol-v2-shell-2.4.0";
+const CACHE_NAME = "apex-protocol-v2-shell-3.0.0";
 const CACHE_PREFIX = "apex-protocol-v2-shell-";
 const CORE = [
   "./",
@@ -10,6 +10,7 @@ const CORE = [
   "./version.json",
   "./manifest.webmanifest",
   "./icon.svg",
+  "./kinetiq-mark.svg",
   "./apple-touch-icon.png",
   "./icon-192.png",
   "./icon-512.png",

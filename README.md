@@ -1,4 +1,9 @@
-# Apex Protocol V2
+# KINETIQ
+
+**NO EXCUSES. NO LIMITS.**
+
+Elite athletic performance tracking with the BLACKOUT theme and selectable colourways.
+
 
 A static Progressive Web App (PWA) for tracking training, nutrition, progress and recovery.
 
@@ -18,7 +23,7 @@ If you prefer branch deployment, choose **Deploy from a branch** in Settings →
 
 1. Open the deployed Pages URL in **Safari**.
 2. Tap **Share → Add to Home Screen**.
-3. Use the title **Apex Protocol**, then tap **Add**.
+3. Use the title **KINETIQ**, then tap **Add**.
 4. If an older generic icon is already installed, remove that old Home Screen shortcut first, then add it again after the updated site has deployed.
 
 ## Data and backups

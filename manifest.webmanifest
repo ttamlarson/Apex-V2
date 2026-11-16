@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Apex Protocol",
-  "short_name": "Apex",
-  "description": "Apex Protocol — training, nutrition and recovery tracker",
+  "name": "KINETIQ — No Excuses. No Limits.",
+  "short_name": "KINETIQ",
+  "description": "KINETIQ — elite athletic performance. No excuses. No limits.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -11,19 +11,7 @@
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon.svg",
+      "src": "./kinetiq-mark.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

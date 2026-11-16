@@ -1,6 +1,6 @@
 {
-  "app": "Apex Protocol",
-  "version": "2.4.0",
+  "app": "KINETIQ",
+  "version": "3.0.0",
   "releaseDate": "2026-11-16",
-  "notes": "Introduces Scan Centre with continuous barcode scanning, expanded product and nutrition details, and a persistent scanner session between scans. Existing local records are retained."
+  "notes": "Complete KINETIQ rebrand with BLACKOUT as the default identity, seven selectable colour themes, updated brand marks, app metadata and premium performance messaging. Existing local records and scanner functionality are retained."
 }
