@@ -1,6 +1,6 @@
 {
   "app": "Apex Protocol",
-  "version": "2.3.0",
-  "releaseDate": "2026-11-15",
-  "notes": "Adds five selectable colour themes: Apex Black, Midnight Blue, Forest Green, Ember and Light. Theme preference is stored locally; existing training, nutrition and progress records are retained."
+  "version": "2.4.0",
+  "releaseDate": "2026-11-16",
+  "notes": "Introduces Scan Centre with continuous barcode scanning, expanded product and nutrition details, and a persistent scanner session between scans. Existing local records are retained."
 }
