@@ -9,10 +9,10 @@
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Apex Protocol">
+<meta name="apple-mobile-web-app-title" content="KINETIQ">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="description" content="Apex Protocol — training, nutrition and recovery tracker">
-<title>Apex Protocol</title>
+<meta name="description" content="KINETIQ — elite athletic performance. No excuses. No limits.">
+<title>KINETIQ</title>
 <style>
 :root{color-scheme:dark;--bg:#000000;--panel:#171717;--line:#303030;--text:#ffffff;--muted:#a6a6a6;--silver:#a6a6a6;--green:#8ed6aa}
 *{box-sizing:border-box}
@@ -116,12 +116,16 @@ body[data-theme="light"] .btn.secondary{color:var(--text)}
 body[data-theme="light"] .pill{color:var(--text);border-color:var(--line)}
 body[data-theme="light"] .notice{color:var(--text)}
 body[data-theme="light"] #toast{background:#18202b;color:#fff}
+
+body[data-theme="crimson"]{--bg:#10090b;--panel:#201216;--line:#4a252e;--text:#fff5f6;--muted:#c5a1a8;--silver:#e04b61;--surface:#190d11;--surface-2:#321820;--input-bg:#13090c;--hero-glow:#652331;--green:#9bd5ad}
+body[data-theme="arctic"]{--bg:#080e13;--panel:#111c25;--line:#304454;--text:#f3f9fc;--muted:#a7bdca;--silver:#8bc8e8;--surface:#0c1720;--surface-2:#1b2b38;--input-bg:#09131b;--hero-glow:#284b60;--green:#8ed6aa}
+body[data-theme="tactical"]{--bg:#0c100b;--panel:#191f14;--line:#39452c;--text:#f4f5ec;--muted:#b2b99e;--silver:#a4ad72;--surface:#12180f;--surface-2:#252e1b;--input-bg:#0e130b;--hero-glow:#414d2a;--green:#b7d98b}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
- <div class="brand"><img class="logo-mark" src="./apex-mountain-inverse.svg" alt="Apex mountain emblem"><div><div class="eyebrow">YOUR TRAINING SYSTEM</div><h1>APEX PROTOCOL</h1></div></div>
+ <div class="brand"><img class="logo-mark" src="./kinetiq-mark.svg" alt="Apex mountain emblem"><div><div class="eyebrow">NO EXCUSES. NO LIMITS.</div><h1>KINETIQ</h1></div></div>
  <div class="small" id="today"></div>
 </header>
 
@@ -306,7 +310,7 @@ body[data-theme="light"] #toast{background:#18202b;color:#fff}
   <div class="field"><label>Protein (g)</label><input id="ptarget" type="number" min="1" value="130"></div>
   <div class="field"><label>Fat target (% of calories)</label><input id="fatpercent" type="number" min="10" max="50" step="1" value="27"></div>
  </div><button class="btn" id="savesettings" style="margin-top:12px">Save targets</button></div>
- <div class="card"><h3>Appearance</h3><p>Choose the colour scheme used across Apex on this device. Your selection is saved with your app settings.</p><div class="field"><label for="themeSelect">App theme</label><select id="themeSelect"><option value="apex">Apex Black</option><option value="midnight">Midnight Blue</option><option value="forest">Forest Green</option><option value="ember">Ember</option><option value="light">Light</option></select></div><div class="small" id="themeDescription" style="margin-top:8px">Apex Black · the original monochrome brand theme.</div></div>
+ <div class="card"><h3>Appearance</h3><p>Choose your KINETIQ colour identity. Your selection is saved on this device.</p><div class="field"><label for="themeSelect">Performance theme</label><select id="themeSelect"><option value="apex">BLACKOUT — Obsidian</option><option value="midnight">Midnight Blue</option><option value="forest">Forest Green</option><option value="ember">Ember</option><option value="light">Light</option><option value="crimson">Crimson Edge</option><option value="arctic">Arctic Steel</option><option value="tactical">Tactical Olive</option></select></div><div class="small" id="themeDescription" style="margin-top:8px">BLACKOUT — obsidian black, gunmetal and steel.</div></div>
  <div class="card"><h3>Backup & restore</h3>
  <p>Records are stored locally in this browser. Export regularly and keep a copy in iCloud, Google Drive, or email so you can restore on another device.</p>
  <div class="row">
@@ -319,11 +323,11 @@ body[data-theme="light"] #toast{background:#18202b;color:#fff}
 </div>
  <div class="card"><h3>Local storage</h3><p>Your records stay in this browser. Clearing browser data can erase them.</p><button class="btn danger" id="erase">Delete all app data</button></div>
 </section>
-<footer>APEX PROTOCOL · TRAIN WITH PURPOSE. BUILD WITH DISCIPLINE.</footer>
+<footer>KINETIQ · NO EXCUSES. NO LIMITS.</footer>
 </div>
-<div id="scannerOverlay" class="hidden" role="dialog" aria-modal="true" aria-label="Apex Scan Centre">
+<div id="scannerOverlay" class="hidden" role="dialog" aria-modal="true" aria-label="KINETIQ Scan Centre">
   <div class="scan-shell">
-    <div class="between"><div><div class="eyebrow">APEX PROTOCOL</div><h3>Scan Centre</h3></div><button class="iconbtn" type="button" id="closeScanner" aria-label="Close scanner">✕</button></div>
+    <div class="between"><div><div class="eyebrow">KINETIQ</div><h3>Scan Centre</h3></div><button class="iconbtn" type="button" id="closeScanner" aria-label="Close scanner">✕</button></div>
     <p class="small" id="scannerStatus">Starting camera…</p>
     <div id="reader"></div>
     <div class="scan-result card" id="scanResult"><div class="small">PRODUCT DETAILS</div><div id="scanProductName">Point the camera at a product barcode.</div><div class="small" id="scanProductMeta"></div><div class="grid two" id="scanNutrition"></div><div class="small" id="scanExtra"></div></div>
@@ -657,7 +661,7 @@ function macroTargets(){
  const carbs=Number.isFinite(remaining)?Math.max(0,remaining/4):0;
  return {calories,protein,fat,carbs,fatPercent};
 }
-function applyTheme(theme){const allowed=['apex','midnight','forest','ember','light'];const selected=allowed.includes(theme)?theme:'apex';document.body.dataset.theme=selected;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=selected==='light'?'#f2f4f7':selected==='midnight'?'#07111f':selected==='forest'?'#07130f':selected==='ember'?'#160c0a':'#000000';const picker=$('themeSelect');if(picker)picker.value=selected;const descriptions={apex:'Apex Black · the original monochrome brand theme.',midnight:'Midnight Blue · cool blue accents with a deep navy interface.',forest:'Forest Green · muted green accents and deep natural tones.',ember:'Ember · warm copper accents with a dark charcoal-red interface.',light:'Light · a clean bright interface for daytime use.'};const description=$('themeDescription');if(description)description.textContent=descriptions[selected]}
+function applyTheme(theme){const allowed=['apex','midnight','forest','ember','light','crimson','arctic','tactical'];const selected=allowed.includes(theme)?theme:'apex';document.body.dataset.theme=selected;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=selected==='light'?'#f2f4f7':selected==='midnight'?'#07111f':selected==='forest'?'#07130f':selected==='ember'?'#160c0a':selected==='crimson'?'#10090b':selected==='arctic'?'#080e13':selected==='tactical'?'#0c100b':'#000000';const picker=$('themeSelect');if(picker)picker.value=selected;const descriptions={apex:'BLACKOUT · obsidian black, gunmetal and steel. KINETIQ signature colourway.',midnight:'Midnight Blue · deep navy with electric blue performance accents.',forest:'Forest Green · muted green accents and deep natural tones.',ember:'Ember · warm copper accents with a dark charcoal-red interface.',light:'Light · a clean bright interface for daytime use.',crimson:'Crimson Edge · deep black with sharp crimson accents.',arctic:'Arctic Steel · cold graphite with ice-blue highlights.',tactical:'Tactical Olive · restrained military olive and charcoal.'};const description=$('themeDescription');if(description)description.textContent=descriptions[selected]}
 function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
 // Persist without re-rendering (keeps input focus while typing)
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
@@ -935,8 +939,8 @@ $('saverecovery').onclick=()=>{state.recoveries.push({id:id(),date:$('rdate').va
 $('recoverylist').onclick=e=>{const b=e.target.closest('[data-recovery-del]');if(b){state.recoveries=state.recoveries.filter(r=>r.id!==b.dataset.recoveryDel);save()}};
 $('savesettings').onclick=()=>{state.settings.calories=Math.max(1,n($('ctarget').value)||2800);state.settings.protein=Math.max(1,n($('ptarget').value)||130);state.settings.fatPercent=Math.min(50,Math.max(10,n($('fatpercent').value)||27));save();toast('Macro targets saved')};
 $('themeSelect').onchange=()=>{state.settings.theme=$('themeSelect').value;applyTheme(state.settings.theme);persist();toast('Theme updated')};
-$('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'Apex Protocol',...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='apex-protocol-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)};
-$('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=window.Apex?Apex.validateBackup(await f.text()):JSON.parse(await f.text());if(!Array.isArray(v.workouts)||!Array.isArray(v.foods)||!Array.isArray(v.measurements)||!Array.isArray(v.recoveries||[])||!Array.isArray(v.routines||[]))throw Error();if(confirm('Replace current data with this backup? A safety copy of your current data is saved first.')){if(window.Apex)Apex.savePreImportCopy();const d=defaults();state={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current},workouts:v.workouts,foods:v.foods,measurements:v.measurements,recoveries:v.recoveries||[],routines:v.routines||[],cardio:v.cardio||[]};init();setPlan(state.current.type);save();toast('Backup restored')}}catch{alert('Invalid Apex Protocol backup file')}e.target.value=''};
+$('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'KINETIQ',...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='kinetiq-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)};
+$('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=window.Apex?Apex.validateBackup(await f.text()):JSON.parse(await f.text());if(!Array.isArray(v.workouts)||!Array.isArray(v.foods)||!Array.isArray(v.measurements)||!Array.isArray(v.recoveries||[])||!Array.isArray(v.routines||[]))throw Error();if(confirm('Replace current data with this backup? A safety copy of your current data is saved first.')){if(window.Apex)Apex.savePreImportCopy();const d=defaults();state={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current},workouts:v.workouts,foods:v.foods,measurements:v.measurements,recoveries:v.recoveries||[],routines:v.routines||[],cardio:v.cardio||[]};init();setPlan(state.current.type);save();toast('Backup restored')}}catch{alert('Invalid KINETIQ backup file')}e.target.value=''};
 
 $('erase').onclick=()=>{if(confirm('Delete all app records from this browser? Export a backup first if needed.')){state=defaults();localStorage.removeItem(KEY);init();setPlan('Upper A');save();toast('Data cleared')}};
 
@@ -1016,7 +1020,7 @@ document.addEventListener('click',e=>{
 // Copy backup to clipboard
 $('copyBackup').onclick=async ()=>{
  try{
-  const payload=JSON.stringify({app:'Apex Protocol',...state},null,2);
+  const payload=JSON.stringify({app:'KINETIQ',...state},null,2);
   await navigator.clipboard.writeText(payload);
   toast('Backup copied — paste into Notes or Drive');
  }catch{
