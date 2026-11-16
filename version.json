@@ -1,6 +1,3 @@
 {
-  "app": "KINETIQ",
-  "version": "3.0.0",
-  "releaseDate": "2026-11-16",
-  "notes": "Complete KINETIQ rebrand with BLACKOUT as the default identity, seven selectable colour themes, updated brand marks, app metadata and premium performance messaging. Existing local records and scanner functionality are retained."
+  "app":"KINETIQ","version":"3.0.1","releaseDate":"2026-11-16","notes":"KINETIQ icon system refresh: unified angular K marks, updated legacy brand artwork, PWA icon declarations and cache version. Existing local records and scanner functionality are retained."
 }
