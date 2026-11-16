@@ -1,6 +1,6 @@
 {
   "app": "STRYV",
-  "version": "4.0.0",
-  "releaseDate": "2026-11-16",
-  "notes": "STRYV Performance Systems rebrand with a new angular S emblem, refreshed app identity and cache version. Existing local records and functionality are retained."
+  "version": "4.0.1",
+  "releaseDate": "2026-11-17",
+  "notes": "STRYV brand asset alignment: updated standalone emblem references, product naming and cache version. Existing local records and functionality are retained."
 }
