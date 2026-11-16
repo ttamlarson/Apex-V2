@@ -1,3 +1,6 @@
 {
-  "app":"KINETIQ","version":"3.0.1","releaseDate":"2026-11-16","notes":"KINETIQ icon system refresh: unified angular K marks, updated legacy brand artwork, PWA icon declarations and cache version. Existing local records and scanner functionality are retained."
+  "app": "KINETIQ",
+  "version": "3.0.2",
+  "releaseDate": "2026-11-16",
+  "notes": "Replaced legacy mountain-shaped artwork with a distinct K monogram across the app mark and SVG brand assets. Existing local records and functionality are retained."
 }
