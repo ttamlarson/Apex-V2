@@ -1,6 +1,6 @@
 {
-  "app": "KINETIQ",
-  "version": "3.1.1",
+  "app": "STRYV",
+  "version": "4.0.0",
   "releaseDate": "2026-11-16",
-  "notes": "Forced fresh iOS Home Screen icon and PWA manifest asset URLs; refreshed service-worker cache. Existing local records and functionality are retained."
+  "notes": "STRYV Performance Systems rebrand with a new angular S emblem, refreshed app identity and cache version. Existing local records and functionality are retained."
 }
