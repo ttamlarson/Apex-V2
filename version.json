@@ -1,6 +1,6 @@
 {
   "app": "KINETIQ",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "releaseDate": "2026-11-16",
-  "notes": "Replaced legacy mountain-shaped artwork with a distinct K monogram across the app mark and SVG brand assets. Existing local records and functionality are retained."
+  "notes": "Refreshed Apple touch and Android PWA PNG icons with the KINETIQ monogram; service-worker cache updated. Existing local records and functionality are retained."
 }
