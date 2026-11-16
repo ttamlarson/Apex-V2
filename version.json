@@ -1,6 +1,6 @@
 {
   "app": "KINETIQ",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "releaseDate": "2026-11-16",
-  "notes": "Redesigned the K monogram to read unmistakably as a letter K; synchronized header, browser, Apple and Android icons; refreshed service-worker cache. Existing local records and functionality are retained."
+  "notes": "Forced fresh iOS Home Screen icon and PWA manifest asset URLs; refreshed service-worker cache. Existing local records and functionality are retained."
 }
