@@ -1,5 +1,5 @@
 /* KINETIQ service worker — versioned cache. */
-const CACHE_NAME = "kinetiq-shell-3.0.1";
+const CACHE_NAME = "kinetiq-shell-3.0.2";
 const CACHE_PREFIX = "kinetiq-shell-";
 const CORE = ["./","./index.html","./update.js","./version.json","./manifest.webmanifest","./icon.svg","./kinetiq-mark.svg","./apple-touch-icon.png","./icon-192.png","./icon-512.png","./apex-mountain.svg","./apex-mountain-inverse.svg","./apex-full-logo.svg","./apex-wordmark.svg","./apex-compact-logo.svg","./apex-stencil.svg"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(CORE))));
