@@ -27,5 +27,5 @@ The app stores records locally in the browser on the device and does not automat
 - `manifest.webmanifest` — CORV PWA name, launch behavior and icon declarations
 - `sw.js` — service worker and offline app-shell cache
 - `apple-touch-icon.png` — iPhone Home Screen icon
-- `icon-192.png`, `icon-512.png`, `corv-mark.svg` — PWA/browser icons
+- `corv-mark.svg` — PWA/browser icon
 - `.github/workflows/deploy-pages.yml` — GitHub Pages deployment workflow
