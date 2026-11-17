@@ -1,7 +1,7 @@
 /* CORV service worker — versioned cache. */
 const CACHE_NAME = "corv-shell-4.1.0";
 const CACHE_PREFIX = "corv-shell-";
-const CORE = ["./","./index.html","./update.js","./version.json","./manifest.webmanifest","./icon.svg","./corv-mark.svg","./apple-touch-icon.png","./icon-192.png","./icon-512.png","./apex-mountain.svg","./apex-mountain-inverse.svg","./apex-full-logo.svg","./apex-wordmark.svg","./apex-compact-logo.svg","./apex-stencil.svg"];
+const CORE = ["./","./index.html","./update.js","./version.json","./manifest.webmanifest","./icon.svg","./corv-mark.svg","./apple-touch-icon.png"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(CORE))));
 self.addEventListener("message",event=>{if(event.data&&event.data.type==="SKIP_WAITING")self.skipWaiting()});
 self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>(key.startsWith(CACHE_PREFIX)||key.startsWith("apex-protocol-v2-shell-"))&&key!==CACHE_NAME).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
