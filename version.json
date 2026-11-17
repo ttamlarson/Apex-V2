@@ -1,6 +1,6 @@
 {
-  "app": "STRYV",
-  "version": "4.0.1",
+  "app": "CORV",
+  "version": "4.1.0",
   "releaseDate": "2026-11-17",
-  "notes": "STRYV brand asset alignment: updated standalone emblem references, product naming and cache version. Existing local records and functionality are retained."
+  "notes": "CORV identity release: new performance brand, emblem, iPhone/PWA icons, updated interface accent and app metadata. Existing local records, storage key and workflows retained."
 }
