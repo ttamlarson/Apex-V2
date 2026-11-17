@@ -5,16 +5,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<link rel="manifest" href="./manifest.webmanifest?v=4.0.1">
-<link rel="icon" href="./stryv-mark.svg?v=4.0.1" type="image/svg+xml">
-<link rel="apple-touch-icon" href="./apple-touch-icon.png?v=4.0.1">
+<link rel="manifest" href="./manifest.webmanifest?v=4.1.0">
+<link rel="icon" href="./corv-mark.svg?v=4.1.0" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png?v=4.1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="STRYV">
+<meta name="apple-mobile-web-app-title" content="CORV">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="description" content="STRYV — performance systems. Built Beyond Limits.">
-<title>STRYV</title>
+<meta name="description" content="CORV — performance systems. BUILT THROUGH REPETITION.">
+<title>CORV</title>
 <style>
-:root{color-scheme:dark;--bg:#000000;--panel:#171717;--line:#303030;--text:#ffffff;--muted:#a6a6a6;--silver:#a6a6a6;--green:#8ed6aa}
+:root{color-scheme:dark;--bg:#000000;--panel:#171717;--line:#303030;--text:#ffffff;--muted:#a6a6a6;--silver:#a6a6a6;--green:#8ed6aa;--accent:#e87524}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,sans-serif}
 button,input,select,textarea{font:inherit}
@@ -30,7 +30,7 @@ h3{font-size:16px;margin:0 0 12px}
 p{color:var(--muted)}
 nav{display:flex;gap:7px;overflow:auto;margin-bottom:18px;padding-bottom:4px}
 nav button{white-space:nowrap;border:1px solid var(--line);background:transparent;color:var(--muted);padding:10px 13px;border-radius:12px}
-nav button.active{background:var(--silver);color:#101114;font-weight:800}
+nav button.active{background:var(--accent);color:#101114;font-weight:800}
 .view{display:none}.view.active{display:block}
 .hero{padding:25px;border:1px solid var(--line);border-radius:22px;background:radial-gradient(ellipse at top right,var(--hero-glow),var(--panel) 55%,var(--bg));margin-bottom:14px}
 .hero h2{font-size:clamp(30px,6vw,43px);line-height:1.05;letter-spacing:-.04em}
@@ -41,8 +41,8 @@ nav button.active{background:var(--silver);color:#101114;font-weight:800}
 .metric{font-size:27px;font-weight:850;letter-spacing:-.04em}
 .small{font-size:12px;color:var(--muted)}
 .bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin:10px 0}
-.bar span{display:block;height:100%;background:var(--silver);width:0}
-.btn{border:1px solid #e0e3e7;background:var(--silver);color:#101114;border-radius:10px;padding:10px 13px;font-weight:750}
+.bar span{display:block;height:100%;background:var(--accent);width:0}
+.btn{border:1px solid #e0e3e7;background:var(--accent);color:#101114;border-radius:10px;padding:10px 13px;font-weight:750}
 .btn.secondary{background:var(--surface-2);color:var(--text);border-color:var(--line)}
 .btn.danger{background:#381c20;color:#ffced1;border-color:#603038}
 .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -125,7 +125,7 @@ body[data-theme="tactical"]{--bg:#0c100b;--panel:#191f14;--line:#39452c;--text:#
 <body>
 <div class="app">
 <header>
- <div class="brand"><img class="logo-mark" src="./stryv-mark.svg" alt="STRYV angular S emblem"><div><div class="eyebrow">BUILT BEYOND LIMITS.</div><h1>STRYV</h1></div></div>
+ <div class="brand"><img class="logo-mark" src="./corv-mark.svg" alt="CORV angular S emblem"><div><div class="eyebrow">BUILT BEYOND LIMITS.</div><h1>CORV</h1></div></div>
  <div class="small" id="today"></div>
 </header>
 
@@ -310,7 +310,7 @@ body[data-theme="tactical"]{--bg:#0c100b;--panel:#191f14;--line:#39452c;--text:#
   <div class="field"><label>Protein (g)</label><input id="ptarget" type="number" min="1" value="130"></div>
   <div class="field"><label>Fat target (% of calories)</label><input id="fatpercent" type="number" min="10" max="50" step="1" value="27"></div>
  </div><button class="btn" id="savesettings" style="margin-top:12px">Save targets</button></div>
- <div class="card"><h3>Appearance</h3><p>Choose your STRYV colour identity. Your selection is saved on this device.</p><div class="field"><label for="themeSelect">Performance theme</label><select id="themeSelect"><option value="apex">BLACKOUT — Obsidian</option><option value="midnight">Midnight Blue</option><option value="forest">Forest Green</option><option value="ember">Ember</option><option value="light">Light</option><option value="crimson">Crimson Edge</option><option value="arctic">Arctic Steel</option><option value="tactical">Tactical Olive</option></select></div><div class="small" id="themeDescription" style="margin-top:8px">BLACKOUT — obsidian black, gunmetal and steel.</div></div>
+ <div class="card"><h3>Appearance</h3><p>Choose your CORV colour identity. Your selection is saved on this device.</p><div class="field"><label for="themeSelect">Performance theme</label><select id="themeSelect"><option value="apex">BLACKOUT — Obsidian</option><option value="midnight">Midnight Blue</option><option value="forest">Forest Green</option><option value="ember">Ember</option><option value="light">Light</option><option value="crimson">Crimson Edge</option><option value="arctic">Arctic Steel</option><option value="tactical">Tactical Olive</option></select></div><div class="small" id="themeDescription" style="margin-top:8px">BLACKOUT — obsidian black, gunmetal and steel.</div></div>
  <div class="card"><h3>Backup & restore</h3>
  <p>Records are stored locally in this browser. Export regularly and keep a copy in iCloud, Google Drive, or email so you can restore on another device.</p>
  <div class="row">
@@ -323,11 +323,11 @@ body[data-theme="tactical"]{--bg:#0c100b;--panel:#191f14;--line:#39452c;--text:#
 </div>
  <div class="card"><h3>Local storage</h3><p>Your records stay in this browser. Clearing browser data can erase them.</p><button class="btn danger" id="erase">Delete all app data</button></div>
 </section>
-<footer>STRYV · NO EXCUSES. NO LIMITS.</footer>
+<footer>CORV · BUILT THROUGH REPETITION. ENGINEERED TO PERFORM.</footer>
 </div>
-<div id="scannerOverlay" class="hidden" role="dialog" aria-modal="true" aria-label="STRYV Scan Centre">
+<div id="scannerOverlay" class="hidden" role="dialog" aria-modal="true" aria-label="CORV Scan Centre">
   <div class="scan-shell">
-    <div class="between"><div><div class="eyebrow">STRYV</div><h3>Scan Centre</h3></div><button class="iconbtn" type="button" id="closeScanner" aria-label="Close scanner">✕</button></div>
+    <div class="between"><div><div class="eyebrow">CORV</div><h3>Scan Centre</h3></div><button class="iconbtn" type="button" id="closeScanner" aria-label="Close scanner">✕</button></div>
     <p class="small" id="scannerStatus">Starting camera…</p>
     <div id="reader"></div>
     <div class="scan-result card" id="scanResult"><div class="small">PRODUCT DETAILS</div><div id="scanProductName">Point the camera at a product barcode.</div><div class="small" id="scanProductMeta"></div><div class="grid two" id="scanNutrition"></div><div class="small" id="scanExtra"></div></div>
@@ -661,7 +661,7 @@ function macroTargets(){
  const carbs=Number.isFinite(remaining)?Math.max(0,remaining/4):0;
  return {calories,protein,fat,carbs,fatPercent};
 }
-function applyTheme(theme){const allowed=['apex','midnight','forest','ember','light','crimson','arctic','tactical'];const selected=allowed.includes(theme)?theme:'apex';document.body.dataset.theme=selected;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=selected==='light'?'#f2f4f7':selected==='midnight'?'#07111f':selected==='forest'?'#07130f':selected==='ember'?'#160c0a':selected==='crimson'?'#10090b':selected==='arctic'?'#080e13':selected==='tactical'?'#0c100b':'#000000';const picker=$('themeSelect');if(picker)picker.value=selected;const descriptions={apex:'BLACKOUT · obsidian black, gunmetal and steel. STRYV signature colourway.',midnight:'Midnight Blue · deep navy with electric blue performance accents.',forest:'Forest Green · muted green accents and deep natural tones.',ember:'Ember · warm copper accents with a dark charcoal-red interface.',light:'Light · a clean bright interface for daytime use.',crimson:'Crimson Edge · deep black with sharp crimson accents.',arctic:'Arctic Steel · cold graphite with ice-blue highlights.',tactical:'Tactical Olive · restrained military olive and charcoal.'};const description=$('themeDescription');if(description)description.textContent=descriptions[selected]}
+function applyTheme(theme){const allowed=['apex','midnight','forest','ember','light','crimson','arctic','tactical'];const selected=allowed.includes(theme)?theme:'apex';document.body.dataset.theme=selected;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=selected==='light'?'#f2f4f7':selected==='midnight'?'#07111f':selected==='forest'?'#07130f':selected==='ember'?'#160c0a':selected==='crimson'?'#10090b':selected==='arctic'?'#080e13':selected==='tactical'?'#0c100b':'#000000';const picker=$('themeSelect');if(picker)picker.value=selected;const descriptions={apex:'BLACKOUT · obsidian black, gunmetal and steel. CORV signature colourway.',midnight:'Midnight Blue · deep navy with electric blue performance accents.',forest:'Forest Green · muted green accents and deep natural tones.',ember:'Ember · warm copper accents with a dark charcoal-red interface.',light:'Light · a clean bright interface for daytime use.',crimson:'Crimson Edge · deep black with sharp crimson accents.',arctic:'Arctic Steel · cold graphite with ice-blue highlights.',tactical:'Tactical Olive · restrained military olive and charcoal.'};const description=$('themeDescription');if(description)description.textContent=descriptions[selected]}
 function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
 // Persist without re-rendering (keeps input focus while typing)
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
@@ -939,8 +939,8 @@ $('saverecovery').onclick=()=>{state.recoveries.push({id:id(),date:$('rdate').va
 $('recoverylist').onclick=e=>{const b=e.target.closest('[data-recovery-del]');if(b){state.recoveries=state.recoveries.filter(r=>r.id!==b.dataset.recoveryDel);save()}};
 $('savesettings').onclick=()=>{state.settings.calories=Math.max(1,n($('ctarget').value)||2800);state.settings.protein=Math.max(1,n($('ptarget').value)||130);state.settings.fatPercent=Math.min(50,Math.max(10,n($('fatpercent').value)||27));save();toast('Macro targets saved')};
 $('themeSelect').onchange=()=>{state.settings.theme=$('themeSelect').value;applyTheme(state.settings.theme);persist();toast('Theme updated')};
-$('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'STRYV',...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='stryv-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)};
-$('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=window.Apex?Apex.validateBackup(await f.text()):JSON.parse(await f.text());if(!Array.isArray(v.workouts)||!Array.isArray(v.foods)||!Array.isArray(v.measurements)||!Array.isArray(v.recoveries||[])||!Array.isArray(v.routines||[]))throw Error();if(confirm('Replace current data with this backup? A safety copy of your current data is saved first.')){if(window.Apex)Apex.savePreImportCopy();const d=defaults();state={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current},workouts:v.workouts,foods:v.foods,measurements:v.measurements,recoveries:v.recoveries||[],routines:v.routines||[],cardio:v.cardio||[]};init();setPlan(state.current.type);save();toast('Backup restored')}}catch{alert('Invalid STRYV backup file')}e.target.value=''};
+$('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'CORV',...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='corv-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)};
+$('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=window.Apex?Apex.validateBackup(await f.text()):JSON.parse(await f.text());if(!Array.isArray(v.workouts)||!Array.isArray(v.foods)||!Array.isArray(v.measurements)||!Array.isArray(v.recoveries||[])||!Array.isArray(v.routines||[]))throw Error();if(confirm('Replace current data with this backup? A safety copy of your current data is saved first.')){if(window.Apex)Apex.savePreImportCopy();const d=defaults();state={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current},workouts:v.workouts,foods:v.foods,measurements:v.measurements,recoveries:v.recoveries||[],routines:v.routines||[],cardio:v.cardio||[]};init();setPlan(state.current.type);save();toast('Backup restored')}}catch{alert('Invalid CORV backup file')}e.target.value=''};
 
 $('erase').onclick=()=>{if(confirm('Delete all app records from this browser? Export a backup first if needed.')){state=defaults();localStorage.removeItem(KEY);init();setPlan('Upper A');save();toast('Data cleared')}};
 
@@ -1020,7 +1020,7 @@ document.addEventListener('click',e=>{
 // Copy backup to clipboard
 $('copyBackup').onclick=async ()=>{
  try{
-  const payload=JSON.stringify({app:'STRYV',...state},null,2);
+  const payload=JSON.stringify({app:'CORV',...state},null,2);
   await navigator.clipboard.writeText(payload);
   toast('Backup copied — paste into Notes or Drive');
  }catch{
