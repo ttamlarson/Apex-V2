@@ -120,41 +120,121 @@ body[data-theme="light"] #toast{background:#18202b;color:#fff}
 body[data-theme="crimson"]{--bg:#10090b;--panel:#201216;--line:#4a252e;--text:#fff5f6;--muted:#c5a1a8;--silver:#e04b61;--surface:#190d11;--surface-2:#321820;--input-bg:#13090c;--hero-glow:#652331;--green:#9bd5ad}
 body[data-theme="arctic"]{--bg:#080e13;--panel:#111c25;--line:#304454;--text:#f3f9fc;--muted:#a7bdca;--silver:#8bc8e8;--surface:#0c1720;--surface-2:#1b2b38;--input-bg:#09131b;--hero-glow:#284b60;--green:#8ed6aa}
 body[data-theme="tactical"]{--bg:#0c100b;--panel:#191f14;--line:#39452c;--text:#f4f5ec;--muted:#b2b99e;--silver:#a4ad72;--surface:#12180f;--surface-2:#252e1b;--input-bg:#0e130b;--hero-glow:#414d2a;--green:#b7d98b}
+
+/* CORV 4.2 — industrial performance design system */
+:root{color-scheme:dark;--bg:#090a0c;--panel:#141619;--line:#292d32;--text:#f5f6f7;--muted:#9299a2;--silver:#c4c9ce;--green:#a6d9b5;--accent:#e87524;--surface:#101215;--surface-2:#202429;--input-bg:#0c0e10;--hero-glow:#352318;--radius:18px}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 50% -18%,#24282d 0,#0b0c0e 43%,#08090a 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.005em}
+.app{max-width:1180px;padding:24px 22px 76px}
+header{position:relative;padding:8px 2px 20px;margin-bottom:12px;border-bottom:1px solid #25292e}
+.brand{gap:14px}.logo-mark{width:50px;height:50px;filter:drop-shadow(0 4px 14px #e8752430)}
+.eyebrow{font-size:9px;letter-spacing:.25em;color:#a0a6ad}
+h1{font-size:21px;font-weight:900;letter-spacing:.22em}
+h2{font-size:clamp(27px,4vw,36px);letter-spacing:-.045em;font-weight:850}
+h3{font-weight:800;letter-spacing:-.015em}
+nav{position:sticky;top:0;z-index:20;gap:5px;margin:0 -4px 24px;padding:10px 4px 12px;background:#090a0ceF;backdrop-filter:blur(18px);border-bottom:1px solid #25292e;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid transparent;border-radius:10px;background:#141619;color:#a5abb2;font-size:12px;font-weight:750;letter-spacing:.035em;transition:.18s ease}
+nav button:hover{border-color:#454b52;color:#fff}
+nav button.active{background:var(--accent);border-color:var(--accent);color:#111;font-weight:900;box-shadow:0 5px 18px #e8752430}
+.nav-ico{width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center}
+.nav-ico svg,.action-ico svg{width:16px;height:16px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.view{animation:corv-in .24s ease both}
+@keyframes corv-in{from{opacity:.35;transform:translateY(5px)}to{opacity:1;transform:none}}
+.hero{position:relative;overflow:hidden;padding:clamp(24px,4vw,42px);border:1px solid #41464c;border-radius:22px;background:linear-gradient(115deg,#171a1e 0%,#121416 48%,#21170f 100%);box-shadow:0 18px 55px #0008;margin-bottom:16px}
+.hero:after{content:"";position:absolute;width:310px;height:310px;right:-95px;top:-145px;border:1px solid #e8752440;transform:rotate(45deg);box-shadow:0 0 0 24px #e8752408,0 0 0 48px #e8752405;pointer-events:none}
+.hero .pill{display:inline-flex;background:#e8752419;border-color:#e8752470;color:#f2a16a}
+.hero h2{max-width:620px;font-size:clamp(34px,6vw,54px);line-height:.99;margin:18px 0 14px;text-transform:uppercase}
+.hero p{max-width:590px;color:#b3b8be;font-size:14px}
+.hero .row{position:relative;z-index:1;margin-top:22px}
+.grid{gap:12px}
+.card,.stat{background:linear-gradient(145deg,#171a1e,#111316);border:1px solid #2c3137;border-radius:16px;box-shadow:0 8px 22px #0002;transition:border-color .18s,transform .18s}
+.card:hover{border-color:#464c53}
+.metric{font-size:clamp(25px,3vw,32px);font-weight:900;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
+.small{color:#969da5}
+.bar{height:5px;background:#2b3036;border-radius:20px}.bar span{background:linear-gradient(90deg,#b84e17,#f28a3b);border-radius:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:10px 16px;border-radius:10px;background:linear-gradient(135deg,#f08a3b,#d9651e);border:1px solid #f39b5d;color:#14110e;font-size:12px;font-weight:900;letter-spacing:.035em;text-transform:uppercase;box-shadow:0 5px 15px #e8752420;transition:transform .16s,filter .16s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn.secondary{background:#202429;color:#e7e9eb;border-color:#3a4047;box-shadow:none}
+.btn.danger{background:#35191a;color:#ffb9b9;border-color:#6a3032;box-shadow:none}
+input,select,textarea{background:#0d0f11;border:1px solid #353b42;border-radius:10px;color:#f4f5f6;min-height:42px}
+input:focus,select:focus,textarea:focus{outline:2px solid #e8752470;border-color:#e87524}
+.field label{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.section-title{margin:24px 0 12px}
+.exercise{background:#101316;border-color:#2b3036}
+.iconbtn{min-width:36px;min-height:36px;background:#22272c;border-color:#3a4148}
+.pill{background:#1b2025;border-color:#454b52;color:#d3d7db;font-weight:800}
+.notice{background:#211810;border:1px solid #5a3825;color:#e8c4a9}
+.empty{border-color:#3b4148;color:#939ba3}
+footer{border-top:1px solid #252a2f;padding-top:22px}
+.dash-section{margin:14px 0;border:1px solid #2a2f35;border-radius:16px;background:#111316;overflow:hidden}
+.dash-section>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;color:#f0f1f2;font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.dash-section>summary::-webkit-details-marker{display:none}
+.dash-section>summary:after{content:"+";display:grid;place-items:center;width:25px;height:25px;border:1px solid #3c4249;border-radius:8px;color:#e87524;font-size:18px;line-height:1}
+.dash-section[open]>summary:after{content:"−"}
+.dash-section[open]>summary{border-bottom:1px solid #2a2f35}
+.dash-section>.card,.dash-section>.grid{margin:0;border:0;border-radius:0;box-shadow:none;padding:14px 16px}
+.dash-section>.section-content{padding:14px 16px}
+.kpi-grid .card{position:relative;min-height:118px;padding:16px}
+.kpi-grid .small:first-child{font-size:9px;font-weight:850;letter-spacing:.16em}
+.kpi-grid .metric{margin:8px 0 1px}
+.kpi-grid .card:before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:2px;background:var(--accent);border-radius:3px}
+.dashboard-kicker{display:flex;align-items:center;gap:8px;color:#e88a4b;font-size:10px;font-weight:900;letter-spacing:.2em}
+.dashboard-kicker:before{content:"";width:18px;height:2px;background:var(--accent)}
+.quick-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.action-link{display:flex;align-items:center;gap:8px;color:#e8eaec;font-size:11px;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+.action-link .action-ico{color:#f08a3b}
+#scannerOverlay{backdrop-filter:blur(12px)}
+.scan-shell{border-radius:20px;border-color:#3a4047;box-shadow:0 24px 90px #000b}
+#toast{background:#f08a3b;color:#16110d;box-shadow:0 8px 25px #0008}
+@media(max-width:700px){
+ .app{padding:14px 12px 88px}
+ header{padding-bottom:14px}
+ nav{top:0;margin:0 -12px 18px;padding:9px 12px 11px}
+ nav button{flex:0 0 auto;padding:9px 12px;font-size:11px}
+ .hero{border-radius:18px;padding:22px 19px}
+ .hero h2{font-size:37px}
+ .grid{gap:9px}
+ .kpi-grid .card{min-height:108px;padding:12px}
+ .dash-section>summary{padding:14px}
+}
+@media(max-width:380px){.hero h2{font-size:32px}.nav-ico{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
 </style>
 </head>
 <body>
 <div class="app">
 <header>
- <div class="brand"><img class="logo-mark" src="./corv-mark.svg" alt="CORV angular S emblem"><div><div class="eyebrow">BUILT BEYOND LIMITS.</div><h1>CORV</h1></div></div>
+ <div class="brand"><img class="logo-mark" src="./corv-mark.svg" alt="CORV angular S emblem"><div><div class="eyebrow">PERFORMANCE SYSTEMS</div><h1>CORV</h1></div></div>
  <div class="small" id="today"></div>
 </header>
 
 <nav>
- <button class="active" data-tab="home">Overview</button>
- <button data-tab="training">Training</button>
- <button data-tab="cardio">Cardio</button>
- <button data-tab="nutrition">Nutrition</button>
- <button data-tab="progress">Progress</button>
- <button data-tab="recovery">Recovery</button>
- <button data-tab="settings">Settings</button>
+ <button class="active" data-tab="home" data-icon="home">Overview</button>
+ <button data-tab="training" data-icon="dumbbell">Training</button>
+ <button data-tab="cardio" data-icon="activity">Cardio</button>
+ <button data-tab="nutrition" data-icon="nutrition">Nutrition</button>
+ <button data-tab="progress" data-icon="chart">Progress</button>
+ <button data-tab="recovery" data-icon="heart">Recovery</button>
+ <button data-tab="settings" data-icon="settings">Settings</button>
 </nav>
 
 <section class="view active" id="home">
  <div class="hero">
-  <span class="pill">CONSISTENCY OVER INTENSITY</span>
+  <span class="dashboard-kicker">CORV PERFORMANCE / DAILY COMMAND</span><span class="pill">CONSISTENCY OVER INTENSITY</span>
   <h2>Build strength.<br>Earn your progress.</h2>
   <p>Train with purpose. Track every rep. Build a stronger version of yourself through consistent training, nutrition and recovery.</p>
   <div class="row"><button class="btn" data-go="training">Start training</button><button class="btn secondary" data-go="nutrition">Log nutrition</button></div>
  </div>
- <div class="grid">
+ <div class="grid kpi-grid">
   <div class="card"><div class="small">CALORIES</div><div class="metric" id="dcal">0</div><div class="small" id="dcalgoal">of 2800 kcal</div><div class="bar"><span id="dcalbar"></span></div></div>
   <div class="card"><div class="small">PROTEIN</div><div class="metric" id="dpro">0g</div><div class="small" id="dprogoal">of 130 g</div><div class="bar"><span id="dprobar"></span></div></div>
   <div class="card"><div class="small">BODY WEIGHT</div><div class="metric" id="dweight">—</div><div class="small">Latest weigh-in</div></div>
   <div class="card"><div class="small">WORKOUTS</div><div class="metric" id="dsessions">0</div><div class="small">Sessions logged</div></div>
 </div>
-<h3 class="section-title">Your saved splits</h3>
-<div class="card" id="homeSplits"><div class="empty">Save a routine under Training to see it here. Default programmes remain available below.</div></div>
-<h3 class="section-title">Programme templates</h3>
+<details class="dash-section" open><summary>Saved programmes <span class="small">YOUR TRAINING SPLITS</span></summary><div class="card" id="homeSplits"><div class="empty">Save a routine under Training to see it here. Default programmes remain available below.</div></div></details>
+<details class="dash-section"><summary>Programme templates <span class="small">READY-TO-TRAIN SPLITS</span></summary>
 <div class="grid two">
   <div class="card">
     <h3>Upper / Lower</h3>
@@ -166,9 +246,9 @@ body[data-theme="tactical"]{--bg:#0c100b;--panel:#191f14;--line:#39452c;--text:#
     <div class="small">Three-day split · Push, pull and legs</div>
     <div class="row" style="margin-top:10px"><button class="btn secondary" data-go="training" data-template="Push Day">Start Push</button></div>
   </div>
-</div>
+</div></details>
  <div class="notice">Starting nutrition targets: 2,800 kcal and 130 g protein. Adjust training volume when nightshift sleep or recovery is poor.</div>
- <h3 class="section-title">Recent activity</h3><div class="card" id="activity"><div class="empty">Your activity will appear here.</div></div>
+ <details class="dash-section" open><summary>Recent activity <span class="small">LATEST SESSIONS</span></summary><div class="card" id="activity"><div class="empty">Your activity will appear here.</div></div></details>
 </section>
 
 <section class="view" id="training">
@@ -332,7 +412,7 @@ body[data-theme="tactical"]{--bg:#0c100b;--panel:#191f14;--line:#39452c;--text:#
     <div id="reader"></div>
     <div class="scan-result card" id="scanResult"><div class="small">PRODUCT DETAILS</div><div id="scanProductName">Point the camera at a product barcode.</div><div class="small" id="scanProductMeta"></div><div class="grid two" id="scanNutrition"></div><div class="small" id="scanExtra"></div></div>
     <div class="row"><button class="btn" type="button" id="scanAgain" disabled>Scan another</button><button class="btn secondary" type="button" id="useScannedProduct" disabled>Use in food log</button></div>
-    <p class="small">Camera access is controlled by your browser. Apex keeps the scanner session open between scans; close it when finished.</p>
+    <p class="small">Camera access is controlled by your browser. CORV keeps the scanner session open between scans; close it when finished.</p>
   </div>
 </div>
 <div id="toast" class="hidden" role="status"></div>
@@ -341,7 +421,7 @@ body[data-theme="tactical"]{--bg:#0c100b;--panel:#191f14;--line:#39452c;--text:#
 <script>
 (() => {
 'use strict';
-const KEY='apexProtocolData_v1';
+const KEY='apexProtocolData_v1'; // Preserved for backwards-compatible workout and nutrition records.
 const $=id=>document.getElementById(id);
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const id=()=>Math.random().toString(36).slice(2,10);
@@ -524,7 +604,7 @@ async function startScanner(){
   try{
     if(!html5QrCode)html5QrCode=new Html5Qrcode('reader');
     if(!scannerRunning){
-      setScannerStatus('Allow camera access if your browser asks. Apex will keep this scan session open.');
+      setScannerStatus('Allow camera access if your browser asks. CORV will keep this scan session open.');
       await html5QrCode.start(
         {facingMode:'environment'},
         {fps:10,qrbox:(viewWidth,viewHeight)=>({width:Math.min(340,Math.floor(viewWidth*.88)),height:Math.min(170,Math.floor(viewHeight*.42))}),aspectRatio:1.777,disableFlip:true},
@@ -536,7 +616,7 @@ async function startScanner(){
   }catch(err){
     overlay.classList.add('hidden');
     const message=err&&err.name==='NotAllowedError'?'Camera permission denied. Enable camera access for this site in iPhone Settings.':'Camera unavailable — check browser permission or enter the barcode manually.';
-    toast(message);console.error('Apex scanner:',err);
+    toast(message);console.error('CORV scanner:',err);
   }
 }
 async function stopScanner(){
@@ -813,7 +893,22 @@ function init(){
  $('duration').value=state.current.duration||'';
  $('wnotes').value=state.current.notes||'';
 }
-function sync(){state.current.type=$('wtype').value;state.current.date=$('wdate').value;state.current.duration=$('duration').value;state.current.notes=$('wnotes').value}
+
+ // CORV icon system: consistent inline line icons, no emoji dependencies.
+ const CORV_ICONS={
+  home:'<path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9M9 20v-6h6v6"/>',
+  dumbbell:'<path d="M6 5v14M3 8v8M18 5v14M21 8v8M6 12h12"/>',
+  activity:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+  nutrition:'<path d="M12 21c-5-3-8-7-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 4-3 8-8 11Z"/><path d="M12 9v7"/>',
+  chart:'<path d="M4 19V5M4 19h17"/><path d="m7 15 4-4 3 2 6-7"/>',
+  heart:'<path d="M20.8 8.8c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2.6v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H6v-2.6h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V5h2.6v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v2.6h-.2a1.7 1.7 0 0 0-1.5 1Z"/>'
+ };
+ document.querySelectorAll('[data-icon]').forEach(b=>{const p=CORV_ICONS[b.dataset.icon];if(p){const i=document.createElement('span');i.className='nav-ico';i.setAttribute('aria-hidden','true');i.innerHTML='<svg viewBox="0 0 24 24">'+p+'</svg>';b.prepend(i)}});
+ // Remember dashboard disclosure state independently of workout records.
+ document.querySelectorAll('#home .dash-section').forEach((d,i)=>{const key='corv.dashboard.section.'+i;const saved=localStorage.getItem(key);if(saved!==null)d.open=saved==='open';d.addEventListener('toggle',()=>localStorage.setItem(key,d.open?'open':'closed'))});
+
+ function sync(){state.current.type=$('wtype').value;state.current.date=$('wdate').value;state.current.duration=$('duration').value;state.current.notes=$('wnotes').value}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));if(b.dataset.tab==='progress'){drawChart([...state.measurements].sort((a,b)=>a.date.localeCompare(b.date)));renderAnalytics()}if(b.dataset.tab==='training')renderRoutines()});
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>document.querySelector(`[data-tab="${b.dataset.go}"]`).click());
 function openWorkout(type) {

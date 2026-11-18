@@ -1,6 +1,6 @@
 {
   "app": "CORV",
-  "version": "4.1.0",
-  "releaseDate": "2026-11-17",
-  "notes": "CORV identity release: new performance brand, emblem, iPhone/PWA icons, updated interface accent and app metadata. Existing local records, storage key and workflows retained."
+  "version": "4.2.0",
+  "releaseDate": "2026-11-18",
+  "notes": "CORV 4.2 visual system refresh: redesigned dashboard, responsive navigation, consistent SVG iconography, collapsible dashboard sections and refined industrial performance styling. Existing local records and storage key preserved."
 }

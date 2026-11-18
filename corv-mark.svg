@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="CORV performance emblem">
-<defs><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".52" stop-color="#c7cdd4"/><stop offset="1" stop-color="#77818c"/></linearGradient><linearGradient id="dark" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#171a1e"/><stop offset="1" stop-color="#050607"/></linearGradient></defs>
-<rect width="512" height="512" rx="92" fill="url(#dark)"/><path d="M0 116 116 0h58L0 174zm512 222L338 512h-58l232-232z" fill="#e87524" opacity=".95"/>
-<path d="M368 118H185c-91 0-144 57-144 139s53 137 144 137h181l-51-63H185c-49 0-78-28-78-74s29-75 78-75h183z" fill="url(#metal)"/>
-<path d="m179 263 102-70 94 61 71-56-89 144-75-56-92 62z" fill="url(#metal)"/>
-<path d="m367 292 58-49-36 66z" fill="#e87524"/>
-<path d="M24 24h464v464H24z" fill="none" stroke="#87919c" stroke-opacity=".42" stroke-width="3"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="CORV mark"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f39a58"/><stop offset="1" stop-color="#d85e1d"/></linearGradient></defs><rect width="128" height="128" rx="27" fill="#090a0c"/><path d="M91 25H62C39 25 24 42 24 64s15 39 38 39h29V82H63c-11 0-18-7-18-18s7-18 18-18h28z" fill="none" stroke="url(#g)" stroke-width="13" stroke-linejoin="bevel"/><path d="m64 30 22 34-22 34" fill="none" stroke="#f5f6f7" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/></svg>

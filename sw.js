@@ -1,5 +1,5 @@
 /* CORV service worker — versioned cache. */
-const CACHE_NAME = "corv-shell-4.1.0";
+const CACHE_NAME = "corv-shell-4.2.0";
 const CACHE_PREFIX = "corv-shell-";
 const CORE = ["./","./index.html","./update.js","./version.json","./manifest.webmanifest","./icon.svg","./corv-mark.svg","./apple-touch-icon.png"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(CORE))));

@@ -2,16 +2,16 @@
   "id": "./",
   "name": "CORV Performance Systems",
   "short_name": "CORV",
-  "description": "CORV — performance systems. Built through repetition. Engineered to perform.",
+  "description": "Train. Fuel. Recover. Evolve. The CORV performance system.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#090a0c",
+  "theme_color": "#090a0c",
   "icons": [
     {
-      "src": "./corv-mark.svg?v=4.1.0",
+      "src": "./corv-mark.svg?v=4.2.0",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
