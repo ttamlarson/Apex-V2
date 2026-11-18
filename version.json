@@ -1,6 +1,6 @@
 {
-  "app": "CORV",
-  "version": "4.2.0",
+  "app": "OVERLOAD",
+  "version": "5.0.0",
   "releaseDate": "2026-11-18",
-  "notes": "CORV 4.2 visual system refresh: redesigned dashboard, responsive navigation, consistent SVG iconography, collapsible dashboard sections and refined industrial performance styling. Existing local records and storage key preserved."
+  "notes": "OVERLOAD full brand release built on the existing CORV performance data and workflows. New OVERLOAD identity, app metadata, iconography, service worker and update manager. Existing local data key and workout/nutrition records retained."
 }

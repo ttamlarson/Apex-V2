@@ -1,8 +1,8 @@
-# CORV Performance Systems
+# OVERLOAD Performance Systems
 
 **BUILT THROUGH REPETITION. ENGINEERED TO PERFORM.**
 
-CORV is a performance training system for tracking training, nutrition, progress and recovery.
+OVERLOAD is a performance training system for tracking training, nutrition, progress and recovery.
 
 ## Deploy to GitHub Pages
 
@@ -10,12 +10,12 @@ CORV is a performance training system for tracking training, nutrition, progress
 2. Deploy using the existing GitHub Pages workflow or the existing branch deployment configuration.
 3. Check the Actions tab and Pages settings for the published URL.
 
-## Add CORV to iPhone
+## Add OVERLOAD to iPhone
 
 1. Open the deployed Pages URL in Safari.
 2. Tap **Share → Add to Home Screen**.
-3. Confirm the name **CORV**, then tap **Add**.
-4. If an older STRYV shortcut is installed, remove that shortcut and add CORV again after deployment.
+3. Confirm the name **OVERLOAD**, then tap **Add**.
+4. If an older previous app shortcut is installed, remove that shortcut and add OVERLOAD again after deployment.
 
 ## Data and backups
 
@@ -24,8 +24,8 @@ The app stores records locally in the browser on the device and does not automat
 ## Files
 
 - `index.html` — complete app
-- `manifest.webmanifest` — CORV PWA name, launch behavior and icon declarations
+- `manifest.webmanifest` — OVERLOAD PWA name, launch behavior and icon declarations
 - `sw.js` — service worker and offline app-shell cache
 - `apple-touch-icon.png` — iPhone Home Screen icon
-- `corv-mark.svg` — PWA/browser icon
+- `overload-mark.svg` — PWA/browser icon
 - `.github/workflows/deploy-pages.yml` — GitHub Pages deployment workflow

@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "CORV Performance Systems",
-  "short_name": "CORV",
-  "description": "Train. Fuel. Recover. Evolve. The CORV performance system.",
+  "name": "OVERLOAD Performance Systems",
+  "short_name": "OVERLOAD",
+  "description": "Train. Fuel. Recover. Evolve. The OVERLOAD performance system.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -11,7 +11,7 @@
   "theme_color": "#090a0c",
   "icons": [
     {
-      "src": "./corv-mark.svg?v=4.2.0",
+      "src": "./overload-mark.svg?v=5.0.0",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
