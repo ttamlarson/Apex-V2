@@ -1,7 +1,7 @@
 /* OVERLOAD service worker — v5.1.0. */
-const CACHE_NAME = "overload-shell-5.1.0";
+const CACHE_NAME = "overload-shell-5.2.0";
 const CACHE_PREFIX = "overload-shell-";
-const CORE = ["./","./index.html","./update.js","./version.json","./manifest.webmanifest","./icon.svg","./overload-mark.svg"];
+const CORE = ["./","./index.html","./update.js","./version.json","./manifest.webmanifest","./icon.svg","./overload-mark.svg","./apple-touch-icon.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)));
 });
