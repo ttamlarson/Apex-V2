@@ -971,6 +971,20 @@ function init(){
      details.addEventListener('toggle',()=>localStorage.setItem(key,details.open?'open':'closed'));
      sectionIndex++;
    });
+
+   if(view.id!=='settings'){
+     [...view.children].filter(el=>el.matches('.card') && el.querySelector(':scope > h3')).forEach((card,i)=>{
+       const heading=card.querySelector(':scope > h3'),title=heading.textContent.trim();
+       const details=document.createElement('details');details.className='fold-section form-fold';
+       const slug=view.id+'-'+title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+       const summary=document.createElement('summary');summary.textContent=title;
+       const body=document.createElement('div');body.className='fold-body';
+       heading.remove();card.replaceWith(details);body.appendChild(card);details.append(summary,body);
+       const key='overload.sections.'+slug,saved=localStorage.getItem(key);
+       details.open=saved===null?i===0:saved==='open';
+       details.addEventListener('toggle',()=>localStorage.setItem(key,details.open?'open':'closed'));
+     });
+   }
    if(view.id==='settings'){
      [...view.children].filter(el=>el.matches('.card') && el.querySelector(':scope > h3')).forEach((card,i)=>{
        const heading=card.querySelector(':scope > h3'),title=heading.textContent.trim();
