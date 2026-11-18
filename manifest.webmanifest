@@ -7,11 +7,11 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#090a0c",
-  "theme_color": "#090a0c",
+  "background_color": "#08090b",
+  "theme_color": "#08090b",
   "icons": [
     {
-      "src": "./overload-mark.svg?v=5.0.0",
+      "src": "./overload-mark.svg?v=5.1.0",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
