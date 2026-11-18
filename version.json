@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "releaseDate": "2026-11-18",
-  "notes": "OVERLOAD full brand release built on the existing CORV performance data and workflows. New OVERLOAD identity, app metadata, iconography, service worker and update manager. Existing local data key and workout/nutrition records retained."
+  "notes": "OVERLOAD visual redesign: performance-tech identity, red-accent design system, responsive dashboard refinements, theme-preserving styling and independently collapsible sections. Existing workout, nutrition and local storage records are preserved."
 }
