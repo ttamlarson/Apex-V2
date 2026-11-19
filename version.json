@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.10.0",
+  "version": "5.11.0",
   "releaseDate": "2026-11-20",
-  "notes": "Adds an opt-in beta testing and structured GitHub feedback system."
+  "notes": "Hardens local data persistence, backup/restore safeguards and offline PWA installation."
 }
