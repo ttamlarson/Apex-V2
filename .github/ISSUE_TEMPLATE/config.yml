@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: OVERLOAD beta tester guide
+    url: https://github.com/ttamlarson/OVERLOAD/blob/main/docs/BETA_TESTING.md
+    about: Read the test missions and privacy guidance before submitting feedback.
