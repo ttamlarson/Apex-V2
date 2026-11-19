@@ -346,8 +346,7 @@ body[data-theme="light"] .notice{color:var(--notice-text)}
   <div class="card"><div class="small">BODY WEIGHT</div><div class="metric" id="dweight">—</div><div class="small">Latest weigh-in</div></div>
   <div class="card"><div class="small">WORKOUTS</div><div class="metric" id="dsessions">0</div><div class="small">Sessions logged</div></div>
 </div>
-<details class="dash-section" open><summary>Saved programmes <span class="small">YOUR TRAINING SPLITS</span></summary><div class="card" id="homeSplits"><div class="empty">Save a routine under Training to see it here. Default programmes remain available below.</div></div></details>
-<details class="dash-section" open><summary>Programme templates <span class="small">EDIT YOUR TRAINING PROGRAMMES</span></summary>
+<details class="dash-section" open><summary>Programmes <span class="small">EDIT YOUR TRAINING PROGRAMMES</span></summary>
  <div id="programmeTemplates" class="grid two"></div>
  <div id="programmeTemplateEditor" class="hidden" style="margin-top:12px"></div>
 </details>
@@ -394,19 +393,6 @@ body[data-theme="light"] .notice{color:var(--notice-text)}
   <div class="field"><label>Date</label><input id="wdate" type="date"></div>
   <div class="field"><label>Duration (min)</label><input id="duration" type="number" min="0" placeholder="60"></div>
  </div><div class="row" style="margin-top:12px"><button class="btn" id="loadplan">Load workout</button><button class="btn secondary" id="addex">+ Exercise</button></div></div>
-
- <h3 class="section-title">Saved routines</h3>
- <div class="card">
-  <div class="formgrid">
-   <div class="field" style="grid-column:span 2"><label>Routine name</label><input id="routineName" placeholder="e.g. Chest & Back Strength"></div>
-   <div class="field"><label>Exercise name</label><input id="routineExercise" placeholder="Bench Press"></div>
-   <div class="field"><label>Sets</label><input id="routineSets" type="number" min="1" max="10" value="3"></div>
-   <div class="field"><label>Rep target</label><input id="routineReps" placeholder="8–10" value="8–10"></div>
-  </div>
-  <div class="row" style="margin-top:12px"><button class="btn secondary" id="addRoutineExercise">+ Add exercise</button><button class="btn" id="saveRoutine">Save routine</button></div>
-  <div id="routineDraft" class="small" style="margin-top:10px">No exercises added to this routine yet.</div>
- </div>
- <div class="card" id="savedRoutines"><div class="empty">Your saved routines will appear here.</div></div>
 
  <div id="exercises"></div>
  <div class="card"><div class="field"><label>Session notes</label><textarea id="wnotes" rows="2" placeholder="Energy, technique, session notes..."></textarea></div><div class="row" style="margin-top:12px"><button class="btn" id="saveworkout">Save workout</button><button class="btn secondary" id="clearworkout">Clear session</button></div></div>
@@ -563,10 +549,10 @@ body[data-theme="light"] .notice{color:var(--notice-text)}
 <div id="toast" class="hidden" role="status"></div>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="./muscle-map.js?v=5.7.0"></script>
+<script src="./muscle-map.js?v=5.8.0"></script>
 <script src="./coach-engine.js"></script>
-<script src="./personal-records.js?v=5.7.0"></script>
-<script src="./programme-templates.js?v=5.7.0"></script>
+<script src="./personal-records.js?v=5.8.0"></script>
+<script src="./programme-templates.js?v=5.8.0"></script>
 <script>
 (() => {
 'use strict';
@@ -1046,19 +1032,7 @@ function renderHome(){
  $('dweight').textContent=latest?latest.weight+' kg':'—';
  const a=[...state.workouts].reverse().slice(0,4);
  $('activity').innerHTML=a.length?a.map(w=>`<div class="listitem between"><strong>${esc(w.type)}</strong><span class="small">${dateText(w.date)}</span></div>`).join(''):'<div class="empty">Your logged workouts will appear here.</div>';
- const splitsEl=$('homeSplits');
- if(splitsEl){
-  if(!state.routines.length){
-   splitsEl.innerHTML='<div class="empty">Save a routine under Training to pin it here. Default programmes remain available below.</div>';
-  } else {
-   splitsEl.innerHTML='<div class="grid two">'+state.routines.map(r=>`
-    <div class="card" style="margin:0">
-     <h3>${esc(r.name)}</h3>
-     <div class="small">${r.exercises.length} exercises · ${r.exercises.slice(0,3).map(e=>esc(e.name)).join(', ')}${r.exercises.length>3?'…':''}</div>
-     <div class="row" style="margin-top:10px"><button class="btn" data-home-routine="${r.id}">Start workout</button></div>
-    </div>`).join('')+'</div>';
-  }
- }
+
 }
 
 function renderCardio(){
@@ -1078,16 +1052,6 @@ function populateFoodLib(){
  });
 }
 
-// ===== V2 ROUTINE BUILDER + WORKOUT ANALYTICS =====
-let routineDraft=[];
-function renderRoutineDraft(){
- const el=$('routineDraft'); if(!el)return;
- el.innerHTML=routineDraft.length?routineDraft.map((e,i)=>`<div class="listitem between"><span>${esc(e.name)} · ${e.sets} × ${esc(e.target)}</span><button class="iconbtn" data-draft-remove="${i}">✕</button></div>`).join(''):'No exercises added to this routine yet.';
-}
-function renderRoutines(){
- const el=$('savedRoutines'); if(!el)return;
- el.innerHTML=state.routines.length?state.routines.map(r=>`<div class="listitem"><div class="between"><strong>${esc(r.name)}</strong><span class="small">${r.exercises.length} exercises</span></div><div class="small">${r.exercises.map(e=>esc(e.name)).join(' · ')}</div><div class="row" style="margin-top:9px"><button class="btn" data-routine-start="${r.id}">Start workout</button><button class="btn secondary" data-routine-edit="${r.id}">Edit</button><button class="btn secondary" data-routine-duplicate="${r.id}">Duplicate</button><button class="btn danger" data-routine-delete="${r.id}">Delete</button></div></div>`).join(''):'<div class="empty">No saved routines yet. Build one above.</div>';
-}
 let templateDraft=null;
 function ensureProgrammeTemplates(){
  if(!Array.isArray(state.programmeTemplates))state.programmeTemplates=window.OverloadProgrammeTemplates.createDefaults(plans);
@@ -1138,10 +1102,7 @@ function startProgrammeTemplateDay(templateId,dayId){
  state.current.exercises=day.exercises.map(ex=>newEx(ex.name,ex.sets,ex.target));
  init();renderExercises();persist();document.querySelector('[data-tab="training"]').click();toast(day.name+' loaded');
 }
-function routineFromCurrent(r){
- // FIX: routines store sets as a number, not an array
- $('routineName').value=r.name;routineDraft=r.exercises.map(e=>({name:e.name,sets:Number(e.sets)||3,target:e.target||'8–12'}));$('saveRoutine').dataset.edit=r.id;renderRoutineDraft();toast('Routine loaded for editing');
-}
+
 function svgLine(values,label,suffix=''){
  if(!values.length)return '<div class="empty">Not enough logged data yet.</div>';
  const w=640,h=190,p=28,nums=values.map(v=>v.value),min=Math.min(...nums),max=Math.max(...nums),range=max-min||1;
@@ -1164,7 +1125,7 @@ function renderAnalytics(){
  $('weekWorkouts').textContent=state.workouts.filter(w=>w.date>=weekStart&&w.date<=now).length;
  $('monthWorkouts').textContent=state.workouts.filter(w=>(w.date||'').startsWith(month)).length;
 }
-function render(){renderHome();renderWorkoutMap();renderCoach();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderRoutines();renderProgrammeTemplates();renderAnalytics();renderCardio();populateFoodLib();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein;$('fatpercent').value=state.settings.fatPercent||27}
+function render(){renderHome();renderWorkoutMap();renderCoach();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderProgrammeTemplates();renderAnalytics();renderCardio();populateFoodLib();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein;$('fatpercent').value=state.settings.fatPercent||27}
 function init(){
  applyTheme(state.settings.theme||'apex');
  const d=today();
@@ -1241,7 +1202,7 @@ function init(){
  });
 
  function sync(){state.current.type=$('wtype').value;state.current.date=$('wdate').value;state.current.duration=$('duration').value;state.current.notes=$('wnotes').value}
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));if(b.dataset.tab==='coach')renderCoach();if(b.dataset.tab==='progress'){drawChart([...state.measurements].sort((a,b)=>a.date.localeCompare(b.date)));renderAnalytics()}if(b.dataset.tab==='training')renderRoutines()});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));if(b.dataset.tab==='coach')renderCoach();if(b.dataset.tab==='progress'){drawChart([...state.measurements].sort((a,b)=>a.date.localeCompare(b.date)));renderAnalytics()}});
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>document.querySelector(`[data-tab="${b.dataset.go}"]`).click());
 function openWorkout(type) {
   if(!$('wtype').querySelector(`option[value="${CSS.escape(type)}"]`)){const opt=document.createElement('option');opt.value=type;opt.textContent=type;$('wtype').appendChild(opt)}
@@ -1262,10 +1223,6 @@ document.querySelectorAll('[data-workout]').forEach(card => {
   });
 });
 
-$('addRoutineExercise').onclick=()=>{const name=$('routineExercise').value.trim();if(!name){toast('Enter an exercise name');return}routineDraft.push({name,sets:Math.max(1,Math.min(10,n($('routineSets').value)||3)),target:$('routineReps').value.trim()||'8–12'});$('routineExercise').value='';renderRoutineDraft()};
-$('routineDraft').onclick=e=>{const b=e.target.closest('[data-draft-remove]');if(b){routineDraft.splice(+b.dataset.draftRemove,1);renderRoutineDraft()}};
-$('saveRoutine').onclick=()=>{const name=$('routineName').value.trim();if(!name||!routineDraft.length){toast('Add a routine name and at least one exercise');return}const edit=$('saveRoutine').dataset.edit;const routine={id:edit||id(),name,exercises:routineDraft.map(e=>({...e}))};const index=state.routines.findIndex(r=>r.id===routine.id);if(index>=0)state.routines[index]=routine;else state.routines.push(routine);delete $('saveRoutine').dataset.edit;routineDraft=[];$('routineName').value='';renderRoutineDraft();save();toast('Routine saved')};
-$('savedRoutines').onclick=e=>{const b=e.target.closest('button');if(!b)return;const r=state.routines.find(x=>x.id===(b.dataset.routineStart||b.dataset.routineEdit||b.dataset.routineDuplicate||b.dataset.routineDelete));if(!r)return;if(b.dataset.routineStart){state.current.type=r.name;state.current.date=today();state.current.duration='';state.current.notes='';state.current.exercises=r.exercises.map(x=>newEx(x.name,x.sets,x.target));init();renderExercises();document.querySelector('[data-tab="training"]').click();toast('Routine loaded into workout')}if(b.dataset.routineEdit)routineFromCurrent(r);if(b.dataset.routineDuplicate){state.routines.push({...JSON.parse(JSON.stringify(r)),id:id(),name:r.name+' Copy'});save();toast('Routine duplicated')}if(b.dataset.routineDelete&&confirm('Delete this saved routine?')){state.routines=state.routines.filter(x=>x.id!==r.id);save();toast('Routine deleted')}};
 $('programmeTemplates').onclick=e=>{
  const b=e.target.closest('button');if(!b)return;
  if(b.dataset.templateEdit){editProgrammeTemplate(b.dataset.templateEdit);return}
@@ -1453,28 +1410,6 @@ $('fbarcode').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefa
 $('scanBarcode').onclick=()=>startScanner();
 $('closeScanner').onclick=()=>stopScanner();
 $('useScannedProduct').onclick=()=>{if(!lastScannedProduct)return;stopScanner();toast('Review the loaded food details, then add food')};
-
-// Home: start saved routine / template
-document.addEventListener('click',e=>{
- const start=e.target.closest('[data-home-routine]');
- if(start){
-  const r=state.routines.find(x=>x.id===start.dataset.homeRoutine);
-  if(!r)return;
-  state.current.type=r.name;
-  state.current.exercises=r.exercises.map(ex=>newEx(ex.name,ex.sets,ex.target));
-  state.current.date=today();
-  state.current.duration='';
-  state.current.notes='';
-  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab==='training'));
-  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='training'));
-  // FIX: was $('wtype').value='Custom', which overwrote the routine name on save
-  init();
-  renderExercises();
-  persist();
-  toast('Routine loaded');
- }
-
-});
 
 // Copy backup to clipboard
 $('copyBackup').onclick=async ()=>{
