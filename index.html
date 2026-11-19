@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<link rel="manifest" href="./manifest.webmanifest?v=5.5.0">
-<link rel="icon" href="./overload-mark.svg?v=5.5.0" type="image/svg+xml">
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=5.5.0">
+<link rel="manifest" href="./manifest.webmanifest?v=5.11.0">
+<link rel="icon" href="./overload-mark.svg?v=5.11.0" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=5.11.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="OVERLOAD">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -533,9 +533,9 @@ body[data-theme="light"] .notice{color:var(--notice-text)}
   <label class="btn secondary" for="import">Import backup</label>
   <input class="hidden" id="import" type="file" accept=".json,application/json">
  </div>
- <p class="small">Importing replaces current records. Only import a backup you trust. There is no automatic cloud sync in this version.</p>
+ <p class="small">Restoring replaces records on this device. OVERLOAD downloads a safety copy of your current records first. Only restore a backup you trust. There is no automatic cloud sync.</p>
 </div>
- <div class="card"><h3>Local storage</h3><p>Your records stay in this browser. Clearing browser data can erase them.</p><button class="btn danger" id="erase">Delete all app data</button></div>
+ <div class="card"><h3>Local storage</h3><p>Your records stay in this browser on this device. They are not protected by an online account or automatic cloud backup. Anyone with access to your unlocked device and browser profile may be able to access them. Clearing browser data, private browsing cleanup, device loss or browser storage failure can erase them.</p><button class="btn danger" id="erase">Delete all app data</button></div>
 </section>
 <footer>OVERLOAD · BUILT UNDER PRESSURE.</footer>
 </div>
@@ -552,10 +552,10 @@ body[data-theme="light"] .notice{color:var(--notice-text)}
 <div id="toast" class="hidden" role="status"></div>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="./muscle-map.js?v=5.9.0"></script>
+<script src="./muscle-map.js?v=5.11.0"></script>
 <script src="./coach-engine.js"></script>
-<script src="./personal-records.js?v=5.9.0"></script>
-<script src="./programme-templates.js?v=5.9.0"></script>
+<script src="./personal-records.js?v=5.11.0"></script>
+<script src="./programme-templates.js?v=5.11.0"></script>
 <script>
 (() => {
 'use strict';
@@ -565,6 +565,8 @@ const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMon
 const id=()=>Math.random().toString(36).slice(2,10);
 const defaults=()=>({settings:{calories:2800,protein:130,fatPercent:27},workouts:[],foods:[],measurements:[],recoveries:[],routines:[],programmeTemplates:null,cardio:[],current:{type:'Upper A',date:today(),duration:'',notes:'',exercises:[]}});
 let state;
+let storageLoadError=false;
+let storageWriteWarningShown=false;
 let foodRenderSnapshot=[];
 let foodEditIndex=null;
 let foodEditOriginal=null;
@@ -588,7 +590,7 @@ try{
    exercises:(day.exercises||[]).map(ex=>({name:ex.name||'Exercise',sets:Array.isArray(ex.sets)?ex.sets.length:(Number(ex.sets)||3),target:ex.target||'8–12'}))
   })).filter(r=>r.exercises.length));
  }
-}catch{state=defaults()}
+}catch(error){storageLoadError=true;state=defaults();console.error('OVERLOAD could not read saved browser data. Existing stored data has been left untouched.',error)}
 
 const FOOD_LIB = [
   {name:'Chicken breast (100g cooked)', cal:165, pro:31},
@@ -882,9 +884,18 @@ function macroTargets(){
  return {calories,protein,fat,carbs,fatPercent};
 }
 function applyTheme(theme){const allowed=['apex','midnight','forest','ember','light','crimson','arctic','tactical'];const selected=allowed.includes(theme)?theme:'apex';document.body.dataset.theme=selected;const meta=document.querySelector('meta[name="theme-color"]');const themeColors={apex:'#08090b',midnight:'#091321',forest:'#0b1712',ember:'#17100d',light:'#f4f5f7',crimson:'#100a0d',arctic:'#0d151b',tactical:'#11150e'};if(meta)meta.content=themeColors[selected];const picker=$('themeSelect');if(picker)picker.value=selected;document.querySelectorAll('[data-theme-choice]').forEach(button=>{const active=button.dataset.themeChoice===selected;button.setAttribute('aria-pressed',String(active));button.classList.toggle('selected',active)});const descriptions={apex:'BLACKOUT · obsidian black, gunmetal and steel. OVERLOAD signature colourway.',midnight:'MIDNIGHT BLUE · deep navy, cool steel and electric blue highlights.',forest:'FOREST GREEN · dark evergreen surfaces with restrained mineral-green accents.',ember:'EMBER · smoked charcoal, warm copper and molten orange details.',light:'LIGHT · porcelain panels, crisp graphite text and OVERLOAD signal red.',crimson:'CRIMSON EDGE · near-black surfaces with sharp, high-contrast crimson.',arctic:'ARCTIC STEEL · cold graphite, silver surfaces and ice-blue highlights.',tactical:'TACTICAL OLIVE · field-inspired charcoal, muted olive and sage details.'};const description=$('themeDescription');if(description)description.textContent=descriptions[selected]}
-function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function storageWriteFailed(error){
+ if(!storageWriteWarningShown){storageWriteWarningShown=true;toast('Could not save data. Export a backup and free browser storage before continuing.');console.error('OVERLOAD storage write failed',error)}
+}
+function save(){
+ if(storageLoadError){toast('Saved data could not be read. OVERLOAD has protected the original browser data from being overwritten.');return}
+ try{localStorage.setItem(KEY,JSON.stringify(state));render()}catch(error){storageWriteFailed(error)}
+}
 // Persist without re-rendering (keeps input focus while typing)
-function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function persist(){
+ if(storageLoadError){toast('Saved data could not be read. Existing browser data is protected.');return false}
+ try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(error){storageWriteFailed(error);return false}
+}
 function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),2200)}
 function renderPersonalRecords(){
  const target=$('personalRecords');if(!target||!window.OverloadPR)return;
@@ -1382,8 +1393,42 @@ $('saverecovery').onclick=()=>{state.recoveries.push({id:id(),date:$('rdate').va
 $('recoverylist').onclick=e=>{const b=e.target.closest('[data-recovery-del]');if(b){state.recoveries=state.recoveries.filter(r=>r.id!==b.dataset.recoveryDel);save()}};
 $('savesettings').onclick=()=>{state.settings.calories=Math.max(1,n($('ctarget').value)||2800);state.settings.protein=Math.max(1,n($('ptarget').value)||130);state.settings.fatPercent=Math.min(50,Math.max(10,n($('fatpercent').value)||27));save();toast('Macro targets saved')};
 $('themeSelect').onchange=()=>{state.settings.theme=$('themeSelect').value;applyTheme(state.settings.theme);persist();toast('Theme updated')};document.querySelectorAll('[data-theme-choice]').forEach(button=>{button.addEventListener('click',()=>{state.settings.theme=button.dataset.themeChoice;applyTheme(state.settings.theme);persist();toast('Theme updated')})});
-$('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'OVERLOAD',...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='overload-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)};
-$('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=window.Apex?Apex.validateBackup(await f.text()):JSON.parse(await f.text());if(!Array.isArray(v.workouts)||!Array.isArray(v.foods)||!Array.isArray(v.measurements)||!Array.isArray(v.recoveries||[])||!Array.isArray(v.routines||[]))throw Error();if(confirm('Replace current data with this backup? A safety copy of your current data is saved first.')){if(window.Apex)Apex.savePreImportCopy();const d=defaults();state={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current},workouts:v.workouts,foods:v.foods,measurements:v.measurements,recoveries:v.recoveries||[],routines:v.routines||[],cardio:v.cardio||[]};delete state.programmes;init();setPlan(state.current.type);save();toast('Backup restored')}}catch{alert('Invalid OVERLOAD backup file')}e.target.value=''};
+function backupPayload(source=state){
+ return {app:'OVERLOAD',schemaVersion:1,exportedAt:new Date().toISOString(),...source};
+}
+function downloadBackup(filename,source=state){
+ const blob=new Blob([JSON.stringify(backupPayload(source),null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+ window.setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+$('export').onclick=()=>downloadBackup('overload-backup-'+today()+'.json');
+$('import').onchange=async e=>{
+ const f=e.target.files[0];if(!f)return;
+ try{
+  if(f.size>25*1024*1024)throw new Error('This backup is larger than 25 MB. Choose a smaller or uncompressed JSON backup.');
+  const v=JSON.parse(await f.text());
+  if(!v||typeof v!=='object'||Array.isArray(v))throw new Error('The selected file is not a valid OVERLOAD backup.');
+  if(v.app&& !['OVERLOAD','APEX','CORV'].includes(String(v.app).toUpperCase()))throw new Error('This file does not appear to be an OVERLOAD backup.');
+  for(const key of ['workouts','foods','measurements']){
+   if(!Array.isArray(v[key])||v[key].some(item=>!item||typeof item!=='object'||Array.isArray(item)))throw new Error('Backup is missing valid '+key+' records.');
+  }
+  for(const key of ['recoveries','routines','cardio']){
+   if(v[key]!==undefined&&(!Array.isArray(v[key])||v[key].some(item=>!item||typeof item!=='object'||Array.isArray(item))))throw new Error('Backup contains invalid '+key+' records.');
+  }
+  if(v.settings!==undefined&&(!v.settings||typeof v.settings!=='object'||Array.isArray(v.settings)))throw new Error('Backup settings are invalid.');
+  if(v.current!==undefined&&(!v.current||typeof v.current!=='object'||Array.isArray(v.current)))throw new Error('Backup current workout is invalid.');
+  if(confirm('Replace the records on this device with this backup? OVERLOAD will download a separate safety copy of your current records first.')){
+   if(storageLoadError)throw new Error('Current browser data could not be read, so restore is disabled to protect it.');
+   downloadBackup('overload-pre-restore-safety-'+today()+'.json',state);
+   const d=defaults(),next={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current},workouts:v.workouts,foods:v.foods,measurements:v.measurements,recoveries:v.recoveries||[],routines:v.routines||[],cardio:v.cardio||[]};
+   delete next.programmes;
+   try{localStorage.setItem(KEY,JSON.stringify(next))}catch(error){throw new Error('Restore could not be saved because browser storage is full or unavailable. Your existing records have not been replaced.')}
+   state=next;init();setPlan(state.current.type);render();toast('Backup restored successfully');
+  }
+ }catch(error){alert(error&&error.message?error.message:'Could not read this backup. Your existing records were not replaced.')}
+ e.target.value='';
+};
 
 $('erase').onclick=()=>{if(confirm('Delete all app records from this browser? Export a backup first if needed.')){state=defaults();localStorage.removeItem(KEY);init();setPlan('Upper A');save();toast('Data cleared')}};
 
@@ -1527,7 +1572,7 @@ if(state.current.exercises.length)renderExercises();else setPlan(state.current.t
 render();
 })();
 </script>
-<script src="./beta-feedback.js?v=5.10.0"></script>
+<script src="./beta-feedback.js?v=5.11.0"></script>
 <script src="./update.js"></script>
 <script>
 if ('serviceWorker' in navigator && !(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())) {
