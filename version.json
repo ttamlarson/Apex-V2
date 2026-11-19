@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.4.1",
+  "version": "5.4.2",
   "releaseDate": "2026-11-19",
-  "notes": "OVERLOAD 5.4.1 makes the Workout Load Map collapsible with its open/closed state remembered on this device. Existing workout records and local storage remain compatible."
+  "notes": "OVERLOAD 5.4.2 upgrades all eight optional themes with full interface-wide colour systems, live theme previews, clearer palette identities and an accessible one-tap theme gallery. Existing theme preferences and local records remain compatible."
 }

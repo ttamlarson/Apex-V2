@@ -3,7 +3,7 @@
  * service worker and only activated after the user taps Update.
  */
 (() => {
-  const APP_VERSION = "5.4.1";
+  const APP_VERSION = "5.4.2";
   let registration = null;
   let reloading = false;
   function ensureUI() {
