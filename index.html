@@ -416,6 +416,14 @@ body[data-theme="light"] .notice{color:var(--notice-text)}
   <div id="routineDraft" class="small" style="margin-top:10px">No exercises added to this routine yet.</div>
  </div>
  <div class="card" id="savedRoutines"><div class="empty">Your saved routines will appear here.</div></div>
+ <h3 class="section-title">Training splits</h3>
+ <div class="card">
+  <div class="small" style="margin-bottom:10px">Build a programme from your saved workout days. Create individual days in Saved routines above, then combine them into a split.</div>
+  <div class="field"><label for="programmeName">Split name</label><input id="programmeName" placeholder="e.g. 4-Day Upper / Lower"></div>
+  <div class="field" style="margin-top:12px"><label>Choose workout days</label><div id="programmeRoutineOptions" class="small"><div class="empty">Save at least one routine above to build a split.</div></div></div>
+  <div class="row" style="margin-top:12px"><button class="btn" id="saveProgramme">+ Create training split</button></div>
+ </div>
+ <div class="card" id="savedProgrammes"><div class="empty">No training splits yet. Create one using your saved routines.</div></div>
  <div id="exercises"></div>
  <div class="card"><div class="field"><label>Session notes</label><textarea id="wnotes" rows="2" placeholder="Energy, technique, session notes..."></textarea></div><div class="row" style="margin-top:12px"><button class="btn" id="saveworkout">Save workout</button><button class="btn secondary" id="clearworkout">Clear session</button></div></div>
  <h3 class="section-title">Rest timer</h3>
@@ -581,7 +589,7 @@ const KEY='apexProtocolData_v1'; // Legacy CORV data key intentionally retained 
 const $=id=>document.getElementById(id);
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const id=()=>Math.random().toString(36).slice(2,10);
-const defaults=()=>({settings:{calories:2800,protein:130,fatPercent:27},workouts:[],foods:[],measurements:[],recoveries:[],routines:[],cardio:[],current:{type:'Upper A',date:today(),duration:'',notes:'',exercises:[]}});
+const defaults=()=>({settings:{calories:2800,protein:130,fatPercent:27},workouts:[],foods:[],measurements:[],recoveries:[],routines:[],programmes:[],cardio:[],current:{type:'Upper A',date:today(),duration:'',notes:'',exercises:[]}});
 let state;
 let foodRenderSnapshot=[];
 let foodEditIndex=null;
@@ -594,6 +602,7 @@ try{
  const d=defaults();
  state.settings={...d.settings,...state.settings};
  for(const k of ['workouts','foods','measurements','recoveries','routines','cardio'])if(!Array.isArray(state[k]))state[k]=[];
+ if(!Array.isArray(state.programmes))state.programmes=[];
  state.foods=state.foods.filter(f=>f&&typeof f==='object').map(f=>({...f,cal:n(f.cal ?? f.calories),pro:n(f.pro ?? f.protein)}));
  state.current={...d.current,...state.current};
  // Migrate the previous custom split builder into V2 saved routines without deleting history.
@@ -1053,14 +1062,14 @@ function renderHome(){
  $('activity').innerHTML=a.length?a.map(w=>`<div class="listitem between"><strong>${esc(w.type)}</strong><span class="small">${dateText(w.date)}</span></div>`).join(''):'<div class="empty">Your logged workouts will appear here.</div>';
  const splitsEl=$('homeSplits');
  if(splitsEl){
-  if(!state.routines.length){
-   splitsEl.innerHTML='<div class="empty">Save a routine under Training to pin it here. Default programmes remain available below.</div>';
+  if(!state.programmes.length){
+   splitsEl.innerHTML='<div class="empty">Create a training split under Training to pin it here. Default templates remain available below.</div>';
   } else {
-   splitsEl.innerHTML='<div class="grid two">'+state.routines.map(r=>`
+   splitsEl.innerHTML='<div class="grid two">'+state.programmes.map(p=>`
     <div class="card" style="margin:0">
-     <h3>${esc(r.name)}</h3>
-     <div class="small">${r.exercises.length} exercises · ${r.exercises.slice(0,3).map(e=>esc(e.name)).join(', ')}${r.exercises.length>3?'…':''}</div>
-     <div class="row" style="margin-top:10px"><button class="btn" data-home-routine="${r.id}">Start workout</button></div>
+     <h3>${esc(p.name)}</h3>
+     <div class="small">${p.routineIds.length} workout days</div>
+     <div class="row" style="margin-top:10px"><button class="btn" data-home-programme="${p.id}">View split</button></div>
     </div>`).join('')+'</div>';
   }
  }
@@ -1093,6 +1102,22 @@ function renderRoutines(){
  const el=$('savedRoutines'); if(!el)return;
  el.innerHTML=state.routines.length?state.routines.map(r=>`<div class="listitem"><div class="between"><strong>${esc(r.name)}</strong><span class="small">${r.exercises.length} exercises</span></div><div class="small">${r.exercises.map(e=>esc(e.name)).join(' · ')}</div><div class="row" style="margin-top:9px"><button class="btn" data-routine-start="${r.id}">Start workout</button><button class="btn secondary" data-routine-edit="${r.id}">Edit</button><button class="btn secondary" data-routine-duplicate="${r.id}">Duplicate</button><button class="btn danger" data-routine-delete="${r.id}">Delete</button></div></div>`).join(''):'<div class="empty">No saved routines yet. Build one above.</div>';
 }
+function renderProgrammeRoutineOptions(){
+ const el=$('programmeRoutineOptions');if(!el)return;
+ el.innerHTML=state.routines.length?state.routines.map(r=>`<label class="listitem" style="display:flex;align-items:center;gap:10px"><input type="checkbox" value="${esc(r.id)}" data-programme-routine style="width:auto;min-width:18px;min-height:18px"><span><strong>${esc(r.name)}</strong><span class="small" style="display:block">${(r.exercises||[]).length} exercises</span></span></label>`).join(''):'<div class="empty">Save at least one routine above before creating a split.</div>';
+}
+function renderProgrammes(){
+ const el=$('savedProgrammes');if(!el)return;
+ el.innerHTML=state.programmes.length?state.programmes.map(p=>{
+  const days=p.routineIds.map(rid=>state.routines.find(r=>r.id===rid)).filter(Boolean);
+  const available=state.routines.filter(r=>!p.routineIds.includes(r.id));
+  return `<div class="listitem">
+   <div class="between"><strong>${esc(p.name)}</strong><span class="small">${days.length} workout days</span></div>
+   <div style="margin-top:10px">${days.length?days.map((r,i)=>`<div class="between" style="gap:8px;padding:8px 0;border-top:1px solid var(--line)"><div><strong>${i+1}. ${esc(r.name)}</strong><div class="small">${(r.exercises||[]).length} exercises</div></div><div class="row"><button class="btn" data-programme-start="${p.id}" data-routine-id="${r.id}">Start</button><button class="iconbtn" aria-label="Remove ${esc(r.name)} from split" data-programme-remove-day="${p.id}" data-routine-id="${r.id}">✕</button></div></div>`).join(''):'<div class="empty">No workout days in this split yet.</div>'}</div>
+   <div class="row" style="margin-top:10px;align-items:center"><select aria-label="Choose a saved workout day to add" id="programme-add-${p.id}" style="flex:1;min-width:0"><option value="">Add a saved workout day…</option>${available.map(r=>`<option value="${esc(r.id)}">${esc(r.name)}</option>`).join('')}</select><button class="btn secondary" data-programme-add-day="${p.id}" ${available.length?'':'disabled'}>Add day</button><button class="btn danger" data-programme-delete="${p.id}">Delete split</button></div>
+  </div>`;
+ }).join(''):'<div class="empty">No training splits yet. Create one using your saved routines.</div>';
+}
 function routineFromCurrent(r){
  // FIX: routines store sets as a number, not an array
  $('routineName').value=r.name;routineDraft=r.exercises.map(e=>({name:e.name,sets:Number(e.sets)||3,target:e.target||'8–12'}));$('saveRoutine').dataset.edit=r.id;renderRoutineDraft();toast('Routine loaded for editing');
@@ -1119,7 +1144,7 @@ function renderAnalytics(){
  $('weekWorkouts').textContent=state.workouts.filter(w=>w.date>=weekStart&&w.date<=now).length;
  $('monthWorkouts').textContent=state.workouts.filter(w=>(w.date||'').startsWith(month)).length;
 }
-function render(){renderHome();renderWorkoutMap();renderCoach();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderRoutines();renderAnalytics();renderCardio();populateFoodLib();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein;$('fatpercent').value=state.settings.fatPercent||27}
+function render(){renderHome();renderWorkoutMap();renderCoach();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderRoutines();renderProgrammeRoutineOptions();renderProgrammes();renderAnalytics();renderCardio();populateFoodLib();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein;$('fatpercent').value=state.settings.fatPercent||27}
 function init(){
  applyTheme(state.settings.theme||'apex');
  const d=today();
@@ -1221,6 +1246,46 @@ $('addRoutineExercise').onclick=()=>{const name=$('routineExercise').value.trim(
 $('routineDraft').onclick=e=>{const b=e.target.closest('[data-draft-remove]');if(b){routineDraft.splice(+b.dataset.draftRemove,1);renderRoutineDraft()}};
 $('saveRoutine').onclick=()=>{const name=$('routineName').value.trim();if(!name||!routineDraft.length){toast('Add a routine name and at least one exercise');return}const edit=$('saveRoutine').dataset.edit;const routine={id:edit||id(),name,exercises:routineDraft.map(e=>({...e}))};const index=state.routines.findIndex(r=>r.id===routine.id);if(index>=0)state.routines[index]=routine;else state.routines.push(routine);delete $('saveRoutine').dataset.edit;routineDraft=[];$('routineName').value='';renderRoutineDraft();save();toast('Routine saved')};
 $('savedRoutines').onclick=e=>{const b=e.target.closest('button');if(!b)return;const r=state.routines.find(x=>x.id===(b.dataset.routineStart||b.dataset.routineEdit||b.dataset.routineDuplicate||b.dataset.routineDelete));if(!r)return;if(b.dataset.routineStart){state.current.type=r.name;state.current.date=today();state.current.duration='';state.current.notes='';state.current.exercises=r.exercises.map(x=>newEx(x.name,x.sets,x.target));init();renderExercises();document.querySelector('[data-tab="training"]').click();toast('Routine loaded into workout')}if(b.dataset.routineEdit)routineFromCurrent(r);if(b.dataset.routineDuplicate){state.routines.push({...JSON.parse(JSON.stringify(r)),id:id(),name:r.name+' Copy'});save();toast('Routine duplicated')}if(b.dataset.routineDelete&&confirm('Delete this saved routine?')){state.routines=state.routines.filter(x=>x.id!==r.id);save();toast('Routine deleted')}};
+$('saveProgramme').onclick=()=>{
+ const name=$('programmeName').value.trim();
+ const routineIds=[...document.querySelectorAll('[data-programme-routine]:checked')].map(x=>x.value);
+ if(!name){toast('Enter a name for this training split');return}
+ if(!routineIds.length){toast('Choose at least one saved workout day');return}
+ state.programmes.push({id:id(),name,routineIds:[...new Set(routineIds)]});
+ $('programmeName').value='';
+ document.querySelectorAll('[data-programme-routine]').forEach(x=>x.checked=false);
+ save();toast('Training split created');
+};
+$('savedProgrammes').onclick=e=>{
+ const b=e.target.closest('button');if(!b)return;
+ const p=state.programmes.find(x=>x.id===b.dataset.programmeDelete||x.id===b.dataset.programmeAddDay||x.id===b.dataset.programmeStart||x.id===b.dataset.programmeRemoveDay);if(!p)return;
+ if(b.dataset.programmeDelete){
+  if(confirm('Delete this training split? Your saved workout days and workout history will remain.')){state.programmes=state.programmes.filter(x=>x.id!==p.id);save();toast('Training split deleted')}
+  return;
+ }
+ if(b.dataset.programmeRemoveDay){
+  if(confirm('Remove this workout day from the split? The saved routine itself will remain.')){p.routineIds=p.routineIds.filter(x=>x!==b.dataset.routineId);save();toast('Workout day removed from split')}
+  return;
+ }
+ if(b.dataset.programmeAddDay){
+  const select=$('programme-add-'+p.id),rid=select?.value;
+  if(!rid||!state.routines.some(r=>r.id===rid)){toast('Choose a saved workout day to add');return}
+  if(!p.routineIds.includes(rid))p.routineIds.push(rid);
+  save();toast('Workout day added to split');return;
+ }
+ if(b.dataset.programmeStart){
+  const r=state.routines.find(x=>x.id===b.dataset.routineId);if(!r)return;
+  state.current.type=r.name;state.current.date=today();state.current.duration='';state.current.notes='';
+  state.current.exercises=r.exercises.map(x=>newEx(x.name,x.sets,x.target));
+  init();renderExercises();persist();document.querySelector('[data-tab="training"]').click();toast('Workout day loaded');
+ }
+};
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-home-programme]');
+ if(!b)return;
+ document.querySelector('[data-tab="training"]').click();
+ $('savedProgrammes')?.scrollIntoView({behavior:'smooth',block:'start'});
+});
 $('analyticsExercise').onchange=renderAnalytics;
 $('muscleMapMode').onchange=renderWorkoutMap;
 const workoutMapFold=$('workoutMapFold');
