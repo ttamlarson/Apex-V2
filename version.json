@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.2.0",
-  "releaseDate": "2026-11-18",
-  "notes": "OVERLOAD visual redesign: performance-tech identity, red-accent design system, responsive dashboard refinements, theme-preserving styling and independently collapsible sections. Existing workout, nutrition and local storage records are preserved. Replaced the legacy Apex iPhone icon with the OVERLOAD stripe mark and versioned the iOS icon reference."
+  "version": "5.2.1",
+  "releaseDate": "2026-11-19",
+  "notes": "OVERLOAD 5.2.1 maintenance release: align manifest cache-busting, service-worker cache and update-manager versions. No training, nutrition or local-storage data model changes."
 }
