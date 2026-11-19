@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "releaseDate": "2026-11-20",
-  "notes": "Adds custom training split management: create programmes from saved workout days, add or remove days, and delete splits without deleting the underlying routines or workout history. Existing local workout data remains compatible."
+  "notes": "Removes the separate custom training split manager and makes the built-in Upper / Lower and Push / Pull / Legs programme templates editable. Template edits are saved locally; workout history and saved routines remain intact."
 }
