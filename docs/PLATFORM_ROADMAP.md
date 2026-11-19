@@ -18,6 +18,7 @@
 - Dedicated Coach workspace.
 - Transparent readiness indicator from recent, complete recovery check-ins.
 - Rolling seven-day workout-frequency comparison.
+- Logged working sets and tonnage trend (load × reps), clearly labelled as volume rather than physiological fatigue.
 - Daily calories and protein context.
 - Isolated deterministic engine with automated tests.
 
