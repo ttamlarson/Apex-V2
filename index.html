@@ -77,6 +77,7 @@ footer{text-align:center;color:#707780;font-size:10px;letter-spacing:.12em;margi
   .metric{font-size:24px}
 }
 @media(max-width:380px){.setrow{grid-template-columns:24px 1fr 1fr 30px}.brand h1{font-size:16px}}
+.muscle-map-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center}.muscle-map-figure{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;min-width:0}.muscle-map-figure h4{text-align:center;margin:3px 0 8px;font-size:11px;letter-spacing:.16em;color:var(--muted)}.muscle-map-figure svg{width:100%;height:auto;max-height:300px;display:block}.muscle-base{fill:#343a41;stroke:#707983;stroke-width:1.2}.muscle-region{stroke:#171a1e;stroke-width:1.1;transition:fill .2s}.muscle-map-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:12px}.muscle-map-group{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:var(--surface);border:1px solid var(--line);border-radius:9px;font-size:12px}.muscle-map-group strong{font-variant-numeric:tabular-nums}.muscle-map-key{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;align-items:center;font-size:10px;color:var(--muted)}.muscle-map-key span{display:flex;align-items:center;gap:5px}.muscle-map-key i{width:10px;height:10px;border-radius:3px;display:inline-block}.muscle-key-low{background:#744324}.muscle-key-high{background:#e87524}@media(max-width:520px){.muscle-map-layout{gap:7px}.muscle-map-figure{padding:6px}.muscle-map-groups{grid-template-columns:1fr}.muscle-map-figure svg{max-height:230px}}
 /* Training date field: keep it inside its column (iPhone Safari) */
 #training .formgrid .field:nth-child(2){min-width:0;width:100%}
 #training #wdate{display:block;width:100%;max-width:150px;min-width:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;padding:10px 6px;font-size:14px}
@@ -319,6 +320,14 @@ body[data-theme="light"]{background:radial-gradient(ellipse at 50% -20%,#e4e8ee 
 
 <section class="view" id="training">
  <div class="eyebrow">SESSION TRACKER</div><h2>Training</h2>
+ <div class="card muscle-map-card">
+  <div class="between"><div><div class="eyebrow">MUSCLE DISTRIBUTION</div><h3 style="margin:4px 0">Workout Load Map</h3></div><select id="muscleMapMode" aria-label="Muscle map period" style="width:auto;max-width:155px"><option value="session">This workout</option><option value="week">Last 7 days</option></select></div>
+  <p class="small" id="muscleMapCaption">Estimated target muscles from the exercises in your current session.</p>
+  <div id="muscleMapBody" class="muscle-map-layout"><div class="empty">Load a workout or add exercises to see the muscle map.</div></div>
+  <div class="muscle-map-key"><span><i class="muscle-key-low"></i>Lower emphasis</span><span><i class="muscle-key-high"></i>Higher emphasis</span><span class="small">Estimated working-set contribution</span></div>
+  <div id="muscleMapGroups" class="muscle-map-groups"></div>
+  <div class="notice">Muscle emphasis is estimated from exercise names and set counts. Compound lifts contribute to secondary muscles too. Unknown exercises are left unmapped rather than guessed; this is a programming guide, not a measurement of actual muscle activation.</div>
+ </div>
  <div class="card"><div class="formgrid">
   <div class="field"><label>Workout</label><select id="wtype"><option>Upper A</option><option>Lower A</option><option>Upper B</option><option>Lower B</option><option>Push Day</option><option>Pull Day</option><option>Leg Day</option><option>Custom</option></select></div>
   <div class="field"><label>Date</label><input id="wdate" type="date"></div>
@@ -484,6 +493,7 @@ body[data-theme="light"]{background:radial-gradient(ellipse at 50% -20%,#e4e8ee 
 <div id="toast" class="hidden" role="status"></div>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="./muscle-map.js?v=5.4.0"></script>
 <script src="./coach-engine.js"></script>
 <script>
 (() => {
@@ -816,6 +826,42 @@ function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden')
 function dateText(d){return d?new Date(d+'T12:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'—'}
 function newEx(name='',sets=3,target='8–12'){return {id:id(),name,target,sets:Array.from({length:Number(sets)||3},()=>({weight:'',reps:'',done:false}))}}
 function setPlan(type){state.current.type=type;state.current.exercises=(plans[type]||[]).map(p=>newEx(...p));renderExercises()}
+function renderWorkoutMap(){
+ const target=$('muscleMapBody');if(!target||!window.OverloadMuscleMap)return;
+ const weekly=$('muscleMapMode')?.value==='week';
+ const report=weekly?window.OverloadMuscleMap.mapWeekly(state.workouts,today()):window.OverloadMuscleMap.mapWorkout({exercises:state.current.exercises||[]});
+ const title=weekly?'Last 7 days':'Current workout';
+ $('muscleMapCaption').textContent=weekly?'Completed or fully logged sets from saved workouts in the last 7 days.':'Estimated target muscles from the exercises in your current session.';
+ const max=Math.max(1,...report.groups.map(g=>g.sets));
+ const shade=id=>{const value=report.totals[id]||0;if(!value)return '#343a41';const alpha=.25+(.75*value/max);return 'rgba(232,117,36,'+alpha.toFixed(2)+')'};
+ const figures=[
+  {name:'FRONT',ids:['frontDelts','chest','biceps','forearms','abs','obliques','quads','calves'],paths:[
+   ['frontDelts','M55 58 Q43 55 38 68 L43 83 Q51 82 59 72 Z'],['frontDelts','M125 58 Q137 55 142 68 L137 83 Q129 82 121 72 Z'],
+   ['chest','M61 78 Q75 70 88 78 L87 105 Q72 111 59 99 Z'],['chest','M92 78 Q105 70 119 78 L121 99 Q108 111 93 105 Z'],
+   ['biceps','M38 86 Q30 93 34 119 L43 130 L51 113 L48 88 Z'],['biceps','M142 86 Q150 93 146 119 L137 130 L129 113 L132 88 Z'],
+   ['forearms','M34 125 L43 132 L48 177 L39 190 L30 176 Z'],['forearms','M146 125 L137 132 L132 177 L141 190 L150 176 Z'],
+   ['abs','M68 109 L88 109 L87 166 L69 166 Z'],['abs','M92 109 L112 109 L111 166 L93 166 Z'],
+   ['obliques','M57 108 L67 111 L68 161 L58 151 Z'],['obliques','M113 111 L123 108 L122 151 L112 161 Z'],
+   ['quads','M64 174 L87 174 L83 252 L68 252 Z'],['quads','M93 174 L116 174 L112 252 L97 252 Z'],
+   ['calves','M69 259 L82 259 L79 325 L68 325 Z'],['calves','M98 259 L111 259 L112 325 L101 325 Z']
+  ]},
+  {name:'BACK',ids:['rearDelts','triceps','upperBack','lats','lowerBack','glutes','hamstrings','calves'],paths:[
+   ['rearDelts','M55 58 Q43 55 38 68 L43 83 Q51 82 59 72 Z'],['rearDelts','M125 58 Q137 55 142 68 L137 83 Q129 82 121 72 Z'],
+   ['triceps','M38 86 Q30 93 34 119 L43 130 L51 113 L48 88 Z'],['triceps','M142 86 Q150 93 146 119 L137 130 L129 113 L132 88 Z'],
+   ['upperBack','M61 76 Q90 65 119 76 L111 115 L69 115 Z'],
+   ['lats','M62 112 L87 116 L84 164 L61 151 Z'],['lats','M118 112 L93 116 L96 164 L119 151 Z'],
+   ['lowerBack','M84 117 L96 117 L101 170 L79 170 Z'],
+   ['glutes','M62 169 Q90 159 118 169 L115 204 L65 204 Z'],
+   ['hamstrings','M65 207 L87 207 L83 258 L68 258 Z'],['hamstrings','M93 207 L115 207 L112 258 L97 258 Z'],
+   ['calves','M69 263 L82 263 L79 325 L68 325 Z'],['calves','M98 263 L111 263 L112 325 L101 325 Z']
+  ]}
+ ];
+ const svg=fig=>'<div class="muscle-map-figure"><h4>'+fig.name+'</h4><svg viewBox="0 0 180 345" role="img" aria-label="'+fig.name.toLowerCase()+' muscle map"><ellipse class="muscle-base" cx="90" cy="27" rx="17" ry="21"/><path class="muscle-base" d="M70 48 Q55 49 47 62 L29 85 L22 125 L31 132 L43 112 L52 86 L57 112 L57 169 L63 177 L59 203 L64 258 L67 331 L83 331 L89 261 L91 261 L97 331 L113 331 L116 258 L121 203 L117 177 L123 169 L123 112 L128 86 L137 112 L149 132 L158 125 L151 85 L133 62 Q125 49 110 48 Z"/>'+fig.paths.map(p=>'<path class="muscle-region" data-muscle="'+p[0]+'" d="'+p[1]+'" fill="'+shade(p[0])+'"/>').join('')+'</svg></div>';
+ target.innerHTML=figures.map(svg).join('');
+ const groupEl=$('muscleMapGroups');
+ groupEl.innerHTML=report.groups.length?report.groups.map(g=>'<div class="muscle-map-group"><span>'+esc(g.label)+'</span><strong>'+g.sets.toFixed(1)+' sets</strong></div>').join(''):'<div class="empty" style="grid-column:1/-1">'+(weekly?'No completed or logged sets in the last 7 days.':'Load a workout or add exercises to see targeted muscle groups.')+'</div>';
+}
+
 function renderExercises(){
  const el=$('exercises');
  if(!state.current.exercises.length){el.innerHTML='<div class="empty">Load a workout or add your own exercise.</div>';return}
@@ -825,6 +871,7 @@ function renderExercises(){
   const tipHtml = tip ? `<div class="notice" style="margin:8px 0 4px;padding:8px 10px">Progressive overload · ${esc(tip)}</div>` : '';
   return `<div class="exercise"><div class="between"><div style="flex:1"><input data-name="${e.id}" value="${esc(e.name)}" aria-label="Exercise name" placeholder="Exercise name"><div class="small" style="margin-top:5px">Target reps: ${esc(e.target)}</div>${tipHtml}</div><button class="iconbtn" data-remove="${e.id}">✕</button></div><div class="setrow"><span class="small">SET</span><span class="small">WEIGHT (kg)</span><span class="small">REPS</span><span></span></div>${e.sets.map((s,i)=>`<div class="setrow"><span class="small">${i+1}</span><input type="number" min="0" step=".25" data-set="${e.id}" data-i="${i}" data-key="weight" value="${esc(s.weight)}" placeholder="kg" aria-label="Weight"><input type="number" min="0" data-set="${e.id}" data-i="${i}" data-key="reps" value="${esc(s.reps)}" placeholder="reps" aria-label="Reps"><button class="iconbtn" data-done="${e.id}" data-i="${i}" style="color:${s.done?'var(--green)':'var(--muted)'}">${s.done?'✓':'○'}</button></div>`).join('')}<div class="row" style="margin-top:9px"><button class="btn secondary" data-addset="${e.id}">+ Set</button><button class="btn secondary" data-rest>Start rest</button></div></div>`;
  }).join('');
+ renderWorkoutMap();
 }
 function totals(date){
  return (Array.isArray(state.foods)?state.foods:[])
@@ -959,7 +1006,7 @@ function renderAnalytics(){
  $('weekWorkouts').textContent=state.workouts.filter(w=>w.date>=weekStart&&w.date<=now).length;
  $('monthWorkouts').textContent=state.workouts.filter(w=>(w.date||'').startsWith(month)).length;
 }
-function render(){renderHome();renderCoach();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderRoutines();renderAnalytics();renderCardio();populateFoodLib();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein;$('fatpercent').value=state.settings.fatPercent||27}
+function render(){renderHome();renderWorkoutMap();renderCoach();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderRoutines();renderAnalytics();renderCardio();populateFoodLib();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein;$('fatpercent').value=state.settings.fatPercent||27}
 function init(){
  applyTheme(state.settings.theme||'apex');
  const d=today();
@@ -1062,9 +1109,10 @@ $('routineDraft').onclick=e=>{const b=e.target.closest('[data-draft-remove]');if
 $('saveRoutine').onclick=()=>{const name=$('routineName').value.trim();if(!name||!routineDraft.length){toast('Add a routine name and at least one exercise');return}const edit=$('saveRoutine').dataset.edit;const routine={id:edit||id(),name,exercises:routineDraft.map(e=>({...e}))};const index=state.routines.findIndex(r=>r.id===routine.id);if(index>=0)state.routines[index]=routine;else state.routines.push(routine);delete $('saveRoutine').dataset.edit;routineDraft=[];$('routineName').value='';renderRoutineDraft();save();toast('Routine saved')};
 $('savedRoutines').onclick=e=>{const b=e.target.closest('button');if(!b)return;const r=state.routines.find(x=>x.id===(b.dataset.routineStart||b.dataset.routineEdit||b.dataset.routineDuplicate||b.dataset.routineDelete));if(!r)return;if(b.dataset.routineStart){state.current.type=r.name;state.current.date=today();state.current.duration='';state.current.notes='';state.current.exercises=r.exercises.map(x=>newEx(x.name,x.sets,x.target));init();renderExercises();document.querySelector('[data-tab="training"]').click();toast('Routine loaded into workout')}if(b.dataset.routineEdit)routineFromCurrent(r);if(b.dataset.routineDuplicate){state.routines.push({...JSON.parse(JSON.stringify(r)),id:id(),name:r.name+' Copy'});save();toast('Routine duplicated')}if(b.dataset.routineDelete&&confirm('Delete this saved routine?')){state.routines=state.routines.filter(x=>x.id!==r.id);save();toast('Routine deleted')}};
 $('analyticsExercise').onchange=renderAnalytics;
+$('muscleMapMode').onchange=renderWorkoutMap;
 $('loadplan').onclick=()=>{sync();setPlan($('wtype').value);persist();toast('Workout loaded')};
 $('addex').onclick=()=>{state.current.exercises.push(newEx('New exercise'));renderExercises();persist()};
-$('exercises').oninput=e=>{const t=e.target;if(t.dataset.name){const x=state.current.exercises.find(a=>a.id===t.dataset.name);if(x)x.name=t.value}if(t.dataset.set){const x=state.current.exercises.find(a=>a.id===t.dataset.set),s=x?.sets[+t.dataset.i];if(s)s[t.dataset.key]=t.value}
+$('exercises').oninput=e=>{const t=e.target;if(t.dataset.name){const x=state.current.exercises.find(a=>a.id===t.dataset.name);if(x)x.name=t.value}if(t.dataset.set){const x=state.current.exercises.find(a=>a.id===t.dataset.set),s=x?.sets[+t.dataset.i];if(s)s[t.dataset.key]=t.value;renderWorkoutMap()}
  // FIX: keep a half-finished workout across reloads
  sync();persist()};
 $('exercises').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.remove){state.current.exercises=state.current.exercises.filter(x=>x.id!==b.dataset.remove);renderExercises()}if(b.dataset.addset){const x=state.current.exercises.find(a=>a.id===b.dataset.addset);x?.sets.push({weight:'',reps:'',done:false});renderExercises()}if(b.dataset.done){const x=state.current.exercises.find(a=>a.id===b.dataset.done),s=x?.sets[+b.dataset.i];if(s){s.done=!s.done;renderExercises()}}if(b.hasAttribute('data-rest')){setTimer(90);startTimer()}persist()};
