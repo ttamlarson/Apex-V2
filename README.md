@@ -4,6 +4,10 @@
 
 OVERLOAD is a performance training system for tracking training, nutrition, progress and recovery.
 
+## Coaching foundation (5.3.0)
+
+The Coach workspace combines recent recovery check-ins, rolling workout frequency and same-day nutrition logs into transparent suggestions. It is a deterministic coaching aid, not a medical assessment or a connected generative-AI service. The engine is isolated in `coach-engine.js` and covered by `node --test tests/coach-engine.test.js`.
+
 ## Deploy to GitHub Pages
 
 1. Keep the application files in the repository root.
