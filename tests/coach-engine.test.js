@@ -13,6 +13,11 @@ test('does not invent readiness when recovery is missing or stale', () => {
   assert.equal(evaluate({ today:'2026-11-19', recoveries:[{date:'2026-11-10',sleep:8,energy:5,stress:1,soreness:1}] }).readiness, null);
 });
 
+test('does not calculate readiness from an incomplete check-in', () => {
+  const result = evaluate({ today:'2026-11-19', recoveries:[{date:'2026-11-19',sleep:'',energy:5,stress:1,soreness:1}] });
+  assert.equal(result.readiness, null);
+  assert.equal(result.recoveryComplete, false);
+});
 test('scores recent recovery check-ins and reports contributing flags', () => {
   const result = evaluate({ today:'2026-11-19', recoveries:[{date:'2026-11-19',sleep:4,energy:2,stress:4,soreness:4}] });
   assert.equal(result.readiness, 40);
