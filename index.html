@@ -258,6 +258,7 @@ body[data-theme="light"]{background:radial-gradient(ellipse at 50% -20%,#e4e8ee 
 
 <nav>
  <button class="active" data-tab="home" data-icon="home">Overview</button>
+ <button data-tab="coach" data-icon="brain">Coach</button>
  <button data-tab="training" data-icon="dumbbell">Training</button>
  <button data-tab="cardio" data-icon="activity">Cardio</button>
  <button data-tab="nutrition" data-icon="nutrition">Nutrition</button>
@@ -295,6 +296,25 @@ body[data-theme="light"]{background:radial-gradient(ellipse at 50% -20%,#e4e8ee 
 </div></details>
  <div class="notice">Starting nutrition targets: 2,800 kcal and 130 g protein. Adjust training volume when nightshift sleep or recovery is poor.</div>
  <details class="dash-section" open><summary>Recent activity <span class="small">LATEST SESSIONS</span></summary><div class="card" id="activity"><div class="empty">Your activity will appear here.</div></div></details>
+</section>
+
+
+<section class="view" id="coach">
+ <div class="eyebrow">ADAPTIVE PERFORMANCE INTELLIGENCE</div><h2>Coach</h2>
+ <div class="hero">
+  <div class="dashboard-kicker">OVERLOAD COACHING ENGINE / BETA</div>
+  <h2 style="font-size:clamp(30px,5vw,46px)">TRAIN WITH<br>INTENTION.</h2>
+  <p>Your training, nutrition and recovery records are brought together to surface practical next steps. Recommendations are based on the information you log — not guesswork.</p>
+  <div class="row"><button class="btn" data-go="training">Open training</button><button class="btn secondary" data-go="recovery">Log recovery</button></div>
+ </div>
+ <div class="grid two">
+  <div class="card"><div class="small">READINESS INDICATOR</div><div class="metric" id="coachReadiness">—</div><div class="small" id="coachReadinessLabel">Log a recovery check-in to establish a baseline.</div><div class="bar"><span id="coachReadinessBar"></span></div></div>
+  <div class="card"><div class="small">TRAINING FREQUENCY</div><div class="metric" id="coachSessions">—</div><div class="small" id="coachSessionsLabel">Sessions in the last 7 days</div></div>
+ </div>
+ <details class="dash-section" open><summary>Today's coaching brief <span class="small">BASED ON YOUR LOGS</span></summary><div class="section-content" id="coachBrief"><div class="empty">Your coaching brief will appear here.</div></div></details>
+ <details class="dash-section" open><summary>Training load <span class="small">ROLLING 7-DAY VIEW</span></summary><div class="section-content" id="coachLoad"><div class="empty">Log workouts to build your training-load view.</div></div></details>
+ <details class="dash-section"><summary>Nutrition check <span class="small">TODAY'S INTAKE</span></summary><div class="section-content" id="coachNutrition"><div class="empty">Your nutrition summary will appear here.</div></div></details>
+ <div class="notice">Coaching beta: these are transparent, rules-based suggestions from your own logs, not medical advice or a diagnosis. The AI coaching layer and cloud-synced history will be added as separate, permission-based services.</div>
 </section>
 
 <section class="view" id="training">
@@ -847,6 +867,47 @@ function renderMeasures(){const ms=[...state.measurements].sort((a,b)=>a.date.lo
 function drawChart(ms){const c=$('chart');if(!c)return;const w=c.clientWidth||600,h=190,dpr=window.devicePixelRatio||1;c.width=w*dpr;c.height=h*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);x.clearRect(0,0,w,h);x.strokeStyle='#343941';for(let i=1;i<4;i++){x.beginPath();x.moveTo(8,h*i/4);x.lineTo(w-8,h*i/4);x.stroke()}const a=ms.filter(m=>n(m.weight)>0);if(!a.length){x.fillStyle='#a0a5ad';x.font='13px system-ui';x.fillText('Log your body weight to start the chart.',12,h/2);return}const vals=a.map(m=>n(m.weight)),lo=Math.min(...vals)-1,hi=Math.max(...vals)+1,px=i=>a.length===1?w/2:12+i*(w-24)/(a.length-1),py=v=>h-18-(v-lo)/(hi-lo)*(h-36);x.strokeStyle='#d8dde3';x.lineWidth=2;x.beginPath();a.forEach((m,i)=>i?x.lineTo(px(i),py(n(m.weight))):x.moveTo(px(i),py(n(m.weight))));x.stroke();a.forEach((m,i)=>{x.fillStyle='#f3f4f6';x.beginPath();x.arc(px(i),py(n(m.weight)),3,0,Math.PI*2);x.fill()});x.fillStyle='#a0a5ad';x.font='11px system-ui';x.fillText(hi.toFixed(1)+' kg',8,12);x.fillText(lo.toFixed(1)+' kg',8,h-3)}
 function renderLifts(){const m={};state.workouts.forEach(w=>w.exercises.forEach(e=>{const sets=e.sets.filter(s=>n(s.weight)>0);if(sets.length){(m[e.name]??=[]).push({date:w.date,weight:Math.max(...sets.map(s=>n(s.weight))),reps:sets.map(s=>s.reps).join('/')})}}));const entries=Object.entries(m);$('liftlist').innerHTML=entries.length?entries.map(([name,a])=>`<div class="listitem between"><div><strong>${esc(name)}</strong><div class="small">${dateText(a.at(-1).date)} · Reps ${esc(a.at(-1).reps||'—')}</div></div><strong>${a.at(-1).weight} kg</strong></div>`).join(''):'<div class="empty">Save workouts to track your recent loads.</div>'}
 function renderRecovery(){$('recoverylist').innerHTML=state.recoveries.length?[...state.recoveries].reverse().map(r=>`<div class="listitem"><div class="between"><strong>${dateText(r.date)}</strong><span class="small">${esc(r.sleep||'—')} h sleep</span></div><div class="small">Energy ${r.energy}/5 · Stress ${r.stress}/5 · Soreness ${r.soreness}/5</div>${r.notes?`<p class="small">${esc(r.notes)}</p>`:''}<button class="iconbtn" data-recovery-del="${r.id}">Delete</button></div>`).join(''):'<div class="empty">No recovery check-ins yet.</div>'}
+
+function renderCoach(){
+ const todayDate=today(),now=new Date(todayDate+'T12:00:00');
+ const daysAgo=date=>Math.floor((now-new Date((date||todayDate)+'T12:00:00'))/86400000);
+ const recentRecovery=[...state.recoveries].filter(r=>r&&r.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
+ const recoveryAge=recentRecovery?daysAgo(recentRecovery.date):Infinity;
+ let readiness=100,readinessReasons=[];
+ if(recentRecovery&&recoveryAge<=3){
+  const sleep=n(recentRecovery.sleep),energy=n(recentRecovery.energy),stress=n(recentRecovery.stress),soreness=n(recentRecovery.soreness);
+  if(sleep>0&&sleep<5){readiness-=25;readinessReasons.push('short sleep');}
+  else if(sleep>0&&sleep<6.5){readiness-=12;readinessReasons.push('sleep below 6.5 hours');}
+  if(energy>0&&energy<=2){readiness-=15;readinessReasons.push('low energy');}
+  if(stress>=4){readiness-=10;readinessReasons.push('elevated stress');}
+  if(soreness>=4){readiness-=10;readinessReasons.push('high soreness');}
+  readiness=Math.max(0,Math.min(100,readiness));
+  $('coachReadiness').textContent=readiness+'/100';
+  $('coachReadinessLabel').textContent=readiness>=80?'Favourable signals in your latest check-in.':readiness>=60?'Some recovery flags — manage session effort.':'Several recovery flags — consider an easier day.';
+  $('coachReadinessBar').style.width=readiness+'%';
+ }else{
+  $('coachReadiness').textContent='—';$('coachReadinessLabel').textContent=recentRecovery?'Latest check-in is more than 3 days old.':'Log a recovery check-in to establish a baseline.';$('coachReadinessBar').style.width='0%';
+ }
+ const last7=state.workouts.filter(w=>daysAgo(w.date)>=0&&daysAgo(w.date)<7).length;
+ const prev7=state.workouts.filter(w=>daysAgo(w.date)>=7&&daysAgo(w.date)<14).length;
+ $('coachSessions').textContent=String(last7);
+ $('coachSessionsLabel').textContent='Sessions in the last 7 days · '+prev7+' in the previous 7';
+ const brief=[];
+ if(!recentRecovery||recoveryAge>3)brief.push('<div class="listitem"><strong>Recovery data needed</strong><div class="small">Add a current sleep, energy, stress and soreness check-in so the brief can reflect how you are feeling.</div><button class="btn secondary" data-go="recovery">Log recovery</button></div>');
+ else if(readiness<60)brief.push('<div class="listitem"><strong>Prioritise recovery today</strong><div class="small">Your latest check-in recorded '+readinessReasons.join(', ')+'. Consider rest, mobility or a lighter technique session rather than chasing load.</div></div>');
+ else if(readiness<80)brief.push('<div class="listitem"><strong>Keep effort controlled</strong><div class="small">Your latest check-in has '+readinessReasons.join(' and ')+'. Keep a few reps in reserve and adjust if warm-ups feel unusually difficult.</div></div>');
+ else brief.push('<div class="listitem"><strong>Recovery signals look favourable</strong><div class="small">Your latest logged check-in has no major flags in this simple indicator. Follow your planned session and let performance guide load.</div></div>');
+ if(last7>=4&&last7>prev7*1.5)brief.push('<div class="listitem"><strong>Training frequency has increased</strong><div class="small">'+last7+' sessions in the last 7 days versus '+prev7+' in the previous week. Watch performance and recovery before adding more volume.</div></div>');
+ else if(last7===0)brief.push('<div class="listitem"><strong>Restart with a manageable session</strong><div class="small">No workouts are logged in the last 7 days. Begin with a familiar programme and build consistency before increasing volume.</div></div>');
+ const recentWorkout=[...state.workouts].filter(w=>w&&w.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
+ if(recentWorkout)brief.push('<div class="listitem"><strong>Last logged session</strong><div class="small">'+esc(recentWorkout.type||'Workout')+' · '+dateText(recentWorkout.date)+'</div></div>');
+ $('coachBrief').innerHTML=brief.join('');
+ $('coachLoad').innerHTML='<div class="grid two"><div class="stat"><div class="small">LAST 7 DAYS</div><div class="metric">'+last7+'</div><div class="small">workouts logged</div></div><div class="stat"><div class="small">PREVIOUS 7 DAYS</div><div class="metric">'+prev7+'</div><div class="small">workouts logged</div></div></div><p class="small">This is a session-frequency comparison, not a measure of physiological training stress. A future load model will use completed sets, volume and intensity.</p>';
+ const intake=totals(todayDate),calGoal=Math.max(1,n(state.settings.calories)),proteinGoal=Math.max(1,n(state.settings.protein));
+ const calPct=Math.round(intake.cal/calGoal*100),proteinPct=Math.round(intake.pro/proteinGoal*100);
+ $('coachNutrition').innerHTML='<div class="grid two"><div class="stat"><div class="small">ENERGY</div><div class="metric">'+Math.round(intake.cal)+' / '+calGoal+'</div><div class="small">'+calPct+'% of daily target</div></div><div class="stat"><div class="small">PROTEIN</div><div class="metric">'+Math.round(intake.pro)+' / '+proteinGoal+' g</div><div class="small">'+proteinPct+'% of daily target</div></div></div><div class="notice">Nutrition totals only include foods recorded for today. Missing entries are not treated as zero intake.</div><button class="btn secondary" data-go="nutrition">Open food log</button>';
+}
+
 function renderHome(){
  const t=totals(today()),c=n(state.settings.calories),p=n(state.settings.protein);
  $('dcal').textContent=Math.round(t.cal);$('dpro').textContent=Math.round(t.pro)+'g';
@@ -925,7 +986,7 @@ function renderAnalytics(){
  $('weekWorkouts').textContent=state.workouts.filter(w=>w.date>=weekStart&&w.date<=now).length;
  $('monthWorkouts').textContent=state.workouts.filter(w=>(w.date||'').startsWith(month)).length;
 }
-function render(){renderHome();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderRoutines();renderAnalytics();renderCardio();populateFoodLib();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein;$('fatpercent').value=state.settings.fatPercent||27}
+function render(){renderHome();renderCoach();renderFood();renderMeasures();renderLifts();renderRecovery();renderWorkoutHistory();renderRoutines();renderAnalytics();renderCardio();populateFoodLib();$('ctarget').value=state.settings.calories;$('ptarget').value=state.settings.protein;$('fatpercent').value=state.settings.fatPercent||27}
 function init(){
  applyTheme(state.settings.theme||'apex');
  const d=today();
@@ -1002,7 +1063,7 @@ function init(){
  });
 
  function sync(){state.current.type=$('wtype').value;state.current.date=$('wdate').value;state.current.duration=$('duration').value;state.current.notes=$('wnotes').value}
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));if(b.dataset.tab==='progress'){drawChart([...state.measurements].sort((a,b)=>a.date.localeCompare(b.date)));renderAnalytics()}if(b.dataset.tab==='training')renderRoutines()});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));if(b.dataset.tab==='coach')renderCoach();if(b.dataset.tab==='progress'){drawChart([...state.measurements].sort((a,b)=>a.date.localeCompare(b.date)));renderAnalytics()}if(b.dataset.tab==='training')renderRoutines()});
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>document.querySelector(`[data-tab="${b.dataset.go}"]`).click());
 function openWorkout(type) {
   if(!$('wtype').querySelector(`option[value="${CSS.escape(type)}"]`)){const opt=document.createElement('option');opt.value=type;opt.textContent=type;$('wtype').appendChild(opt)}
