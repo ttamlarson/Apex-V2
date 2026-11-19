@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.8.0",
+  "version": "5.9.0",
   "releaseDate": "2026-11-20",
-  "notes": "Removes the saved-routines interface and renames editable programme templates to Programmes. Existing workout history and programme-template edits are preserved."
+  "notes": "Adds the ability to create and save additional custom training programmes alongside the editable built-in templates."
 }
