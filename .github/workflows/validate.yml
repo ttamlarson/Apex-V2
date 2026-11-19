@@ -21,7 +21,6 @@ jobs:
           const { spawnSync } = require('child_process');
           const html = fs.readFileSync('index.html', 'utf8');
           const scripts = html.split('<script').slice(1).map(block => block.slice(block.indexOf('>') + 1, block.indexOf('</script>'))).filter(source => source.trim());
-            .map(match => match[1]).filter(source => source.trim());
           scripts.forEach((source, index) => {
             const path = `/tmp/overload-inline-${index}.js`;
             fs.writeFileSync(path, source);
