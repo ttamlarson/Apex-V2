@@ -27,7 +27,7 @@ The Coach workspace combines recent recovery check-ins, rolling workout frequenc
 
 ## Data and backups
 
-The app stores records locally in the browser on the device and does not automatically sync between devices. Existing local storage key and data model are preserved by the rebrand. Use **Settings → Backup & restore → Export JSON backup** regularly. Do not clear Safari website data or change the site's origin if you need to retain existing local records.
+The app stores records locally in the browser on the device and does not automatically sync between devices. Existing local storage key and data model are preserved by the rebrand. Use **Settings → Backup & restore → Export JSON backup** regularly. Keep at least two copies in separate locations. Restores download a safety copy before replacing device records. Do not clear Safari website data or change the site's origin if you need to retain existing local records.
 
 ## Files
 
@@ -37,3 +37,4 @@ The app stores records locally in the browser on the device and does not automat
 - `apple-touch-icon.png` — iPhone Home Screen icon
 - `overload-mark.svg` — PWA/browser icon
 - `.github/workflows/deploy-pages.yml` — GitHub Pages deployment workflow
+
