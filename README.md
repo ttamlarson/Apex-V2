@@ -4,9 +4,9 @@
 
 OVERLOAD is a performance training system for tracking training, nutrition, progress and recovery.
 
-## Product roadmap\n\nSee [docs/PLATFORM_ROADMAP.md](docs/PLATFORM_ROADMAP.md) for the complete performance-platform delivery plan.\n\n## Coaching foundation (5.3.0)
+## Product roadmap\n\nSee [docs/PLATFORM_ROADMAP.md](docs/PLATFORM_ROADMAP.md) for the complete performance-platform delivery plan.\n\n## Coaching and workout intelligence (5.4.0)
 
-The Coach workspace combines recent recovery check-ins, rolling workout frequency and same-day nutrition logs into transparent suggestions. It is a deterministic coaching aid, not a medical assessment or a connected generative-AI service. The engine is isolated in `coach-engine.js` and covered by `node --test tests/coach-engine.test.js`.
+The Coach workspace combines recent recovery check-ins, rolling workout frequency and same-day nutrition logs into transparent suggestions. The Training workspace includes a Workout Load Map with front/back muscle views for the current session or rolling seven-day completed/logged sets. Exercise-to-muscle estimates are transparent and deterministic; unknown exercises remain unmapped rather than guessed. These features are training aids, not medical assessments. Engines are isolated in `coach-engine.js` and `muscle-map.js` and covered by Node tests.
 
 ## Deploy to GitHub Pages
 
