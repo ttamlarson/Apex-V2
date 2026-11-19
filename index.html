@@ -346,7 +346,8 @@ body[data-theme="light"] .notice{color:var(--notice-text)}
   <div class="card"><div class="small">BODY WEIGHT</div><div class="metric" id="dweight">—</div><div class="small">Latest weigh-in</div></div>
   <div class="card"><div class="small">WORKOUTS</div><div class="metric" id="dsessions">0</div><div class="small">Sessions logged</div></div>
 </div>
-<details class="dash-section" open><summary>Programmes <span class="small">EDIT YOUR TRAINING PROGRAMMES</span></summary>
+<details class="dash-section" open><summary>Programmes <span class="small">CREATE AND EDIT YOUR TRAINING PROGRAMMES</span></summary>
+ <div class="row" style="margin:0 0 12px"><button class="btn" id="addProgramme">+ Add programme</button></div>
  <div id="programmeTemplates" class="grid two"></div>
  <div id="programmeTemplateEditor" class="hidden" style="margin-top:12px"></div>
 </details>
@@ -549,10 +550,10 @@ body[data-theme="light"] .notice{color:var(--notice-text)}
 <div id="toast" class="hidden" role="status"></div>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="./muscle-map.js?v=5.8.0"></script>
+<script src="./muscle-map.js?v=5.9.0"></script>
 <script src="./coach-engine.js"></script>
-<script src="./personal-records.js?v=5.8.0"></script>
-<script src="./programme-templates.js?v=5.8.0"></script>
+<script src="./personal-records.js?v=5.9.0"></script>
+<script src="./programme-templates.js?v=5.9.0"></script>
 <script>
 (() => {
 'use strict';
@@ -1053,6 +1054,7 @@ function populateFoodLib(){
 }
 
 let templateDraft=null;
+let creatingProgramme=false;
 function ensureProgrammeTemplates(){
  if(!Array.isArray(state.programmeTemplates))state.programmeTemplates=window.OverloadProgrammeTemplates.createDefaults(plans);
 }
@@ -1071,7 +1073,7 @@ function renderProgrammeTemplateEditor(){
  if(!templateDraft){el.classList.add('hidden');el.innerHTML='';return}
  el.classList.remove('hidden');
  el.innerHTML=`<div class="card">
-  <div class="between"><h3>Edit programme template</h3><button class="iconbtn" data-template-cancel aria-label="Close editor">✕</button></div>
+  <div class="between"><h3>${creatingProgramme ? "Create programme" : "Edit programme"}</h3><button class="iconbtn" data-template-cancel aria-label="Close editor">✕</button></div>
   <div class="field"><label>Programme name</label><input data-template-name value="${esc(templateDraft.name)}" maxlength="60"></div>
   <div class="field" style="margin-top:10px"><label>Description</label><input data-template-description value="${esc(templateDraft.description||'')}" maxlength="120"></div>
   <h4 style="margin:18px 0 8px">Workout days</h4>
@@ -1086,11 +1088,18 @@ function renderProgrammeTemplateEditor(){
    <button class="btn secondary" style="margin-top:9px" data-template-add-exercise="${esc(day.id)}">+ Add exercise</button>
   </div>`).join('')}
   <div class="row" style="margin-top:12px"><button class="btn secondary" data-template-add-day>+ Add workout day</button></div>
-  <div class="row" style="margin-top:16px"><button class="btn" data-template-save>Save changes</button><button class="btn secondary" data-template-cancel>Cancel</button></div>
+  <div class="row" style="margin-top:16px"><button class="btn" data-template-save>${creatingProgramme ? "Create programme" : "Save changes"}</button><button class="btn secondary" data-template-cancel>Cancel</button></div>
  </div>`;
+}
+function createProgramme(){
+ creatingProgramme=true;
+ templateDraft={id:id(),name:'New programme',description:'',days:[{id:id(),name:'Day 1',exercises:[{name:'New exercise',sets:3,target:'8–12'}]}]};
+ renderProgrammeTemplateEditor();
+ $('programmeTemplateEditor').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function editProgrammeTemplate(templateId){
  const template=state.programmeTemplates.find(item=>item.id===templateId);if(!template)return;
+ creatingProgramme=false;
  templateDraft=window.OverloadProgrammeTemplates.clone(template);
  renderProgrammeTemplateEditor();
  $('programmeTemplateEditor').scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1223,6 +1232,7 @@ document.querySelectorAll('[data-workout]').forEach(card => {
   });
 });
 
+$('addProgramme').onclick=createProgramme;
 $('programmeTemplates').onclick=e=>{
  const b=e.target.closest('button');if(!b)return;
  if(b.dataset.templateEdit){editProgrammeTemplate(b.dataset.templateEdit);return}
@@ -1240,7 +1250,7 @@ $('programmeTemplateEditor').oninput=e=>{
 };
 $('programmeTemplateEditor').onclick=e=>{
  const b=e.target.closest('button');if(!b||!templateDraft)return;
- if(b.hasAttribute('data-template-cancel')){templateDraft=null;renderProgrammeTemplateEditor();return}
+ if(b.hasAttribute('data-template-cancel')){templateDraft=null;creatingProgramme=false;renderProgrammeTemplateEditor();return}
  if(b.hasAttribute('data-template-add-day')){templateDraft.days.push({id:id(),name:'New workout day',exercises:[{name:'New exercise',sets:3,target:'8–12'}]});renderProgrammeTemplateEditor();return}
  if(b.dataset.templateRemoveDay){if(templateDraft.days.length<=1){toast('A programme must contain at least one workout day');return}templateDraft.days=templateDraft.days.filter(day=>day.id!==b.dataset.templateRemoveDay);renderProgrammeTemplateEditor();return}
  if(b.dataset.templateAddExercise){const day=templateDraft.days.find(x=>x.id===b.dataset.templateAddExercise);if(day){day.exercises.push({name:'New exercise',sets:3,target:'8–12'});renderProgrammeTemplateEditor()}return}
@@ -1249,10 +1259,17 @@ $('programmeTemplateEditor').onclick=e=>{
   const name=templateDraft.name.trim();
   if(!name){toast('Enter a programme name');return}
   if(!templateDraft.days.length||templateDraft.days.some(day=>!day.name.trim()||!day.exercises.length||day.exercises.some(ex=>!ex.name.trim()))){toast('Each workout day needs a name and at least one exercise');return}
-  const index=state.programmeTemplates.findIndex(item=>item.id===templateDraft.id);
-  if(index<0){toast('Programme template could not be found');return}
-  state.programmeTemplates[index]=window.OverloadProgrammeTemplates.clone(templateDraft);
-  templateDraft=null;save();toast('Programme template saved');
+  const programme=window.OverloadProgrammeTemplates.clone(templateDraft);
+  const wasCreating=creatingProgramme;
+  if(wasCreating){
+   if(state.programmeTemplates.some(item=>item.name.trim().toLowerCase()===name.toLowerCase())){toast('A programme with that name already exists');return}
+   state.programmeTemplates.push(programme);
+  }else{
+   const index=state.programmeTemplates.findIndex(item=>item.id===templateDraft.id);
+   if(index<0){toast('Programme could not be found');return}
+   state.programmeTemplates[index]=programme;
+  }
+  templateDraft=null;creatingProgramme=false;save();toast(wasCreating?'Programme created':'Programme saved');
  }
 };
 $('analyticsExercise').onchange=renderAnalytics;
