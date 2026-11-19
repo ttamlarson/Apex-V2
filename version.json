@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.7.0",
+  "version": "5.8.0",
   "releaseDate": "2026-11-20",
-  "notes": "Removes the separate custom training split manager and makes the built-in Upper / Lower and Push / Pull / Legs programme templates editable. Template edits are saved locally; workout history and saved routines remain intact."
+  "notes": "Removes the saved-routines interface and renames editable programme templates to Programmes. Existing workout history and programme-template edits are preserved."
 }
