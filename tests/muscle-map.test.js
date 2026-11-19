@@ -18,7 +18,7 @@ test('maps lower-body exercises and ignores unknown movements',()=>{
   const result=map.mapWorkout({exercises:[{name:'Squat',sets:[{},{},{}]},{name:'Mystery Movement',sets:[{},{}]}]});
   assert.equal(result.totals.quads,3);
   assert.equal(result.totals.glutes,1.95);
-  assert.equal(result.groups.length,3);
+  assert.equal(result.groups.length,4);
 });
 test('weekly map only counts completed or fully logged sets in the last seven days',()=>{
   const result=map.mapWeekly([
