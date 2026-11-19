@@ -2,7 +2,6 @@
 name: Beta feedback / idea
 about: Share usability feedback or an improvement idea
 title: "[Beta Feedback] "
-labels: ["beta-feedback"]
 assignees: []
 ---
 
