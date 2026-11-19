@@ -1048,14 +1048,14 @@ function renderHome(){
  $('activity').innerHTML=a.length?a.map(w=>`<div class="listitem between"><strong>${esc(w.type)}</strong><span class="small">${dateText(w.date)}</span></div>`).join(''):'<div class="empty">Your logged workouts will appear here.</div>';
  const splitsEl=$('homeSplits');
  if(splitsEl){
-  if(!state.programmes.length){
-   splitsEl.innerHTML='<div class="empty">Create a training split under Training to pin it here. Default templates remain available below.</div>';
+  if(!state.routines.length){
+   splitsEl.innerHTML='<div class="empty">Save a routine under Training to pin it here. Default programmes remain available below.</div>';
   } else {
-   splitsEl.innerHTML='<div class="grid two">'+state.programmes.map(p=>`
+   splitsEl.innerHTML='<div class="grid two">'+state.routines.map(r=>`
     <div class="card" style="margin:0">
-     <h3>${esc(p.name)}</h3>
-     <div class="small">${p.routineIds.length} workout days</div>
-     <div class="row" style="margin-top:10px"><button class="btn" data-home-programme="${p.id}">View split</button></div>
+     <h3>${esc(r.name)}</h3>
+     <div class="small">${r.exercises.length} exercises · ${r.exercises.slice(0,3).map(e=>esc(e.name)).join(', ')}${r.exercises.length>3?'…':''}</div>
+     <div class="row" style="margin-top:10px"><button class="btn" data-home-routine="${r.id}">Start workout</button></div>
     </div>`).join('')+'</div>';
   }
  }
@@ -1407,7 +1407,7 @@ $('recoverylist').onclick=e=>{const b=e.target.closest('[data-recovery-del]');if
 $('savesettings').onclick=()=>{state.settings.calories=Math.max(1,n($('ctarget').value)||2800);state.settings.protein=Math.max(1,n($('ptarget').value)||130);state.settings.fatPercent=Math.min(50,Math.max(10,n($('fatpercent').value)||27));save();toast('Macro targets saved')};
 $('themeSelect').onchange=()=>{state.settings.theme=$('themeSelect').value;applyTheme(state.settings.theme);persist();toast('Theme updated')};document.querySelectorAll('[data-theme-choice]').forEach(button=>{button.addEventListener('click',()=>{state.settings.theme=button.dataset.themeChoice;applyTheme(state.settings.theme);persist();toast('Theme updated')})});
 $('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'OVERLOAD',...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='overload-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)};
-$('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=window.Apex?Apex.validateBackup(await f.text()):JSON.parse(await f.text());if(!Array.isArray(v.workouts)||!Array.isArray(v.foods)||!Array.isArray(v.measurements)||!Array.isArray(v.recoveries||[])||!Array.isArray(v.routines||[]))throw Error();if(confirm('Replace current data with this backup? A safety copy of your current data is saved first.')){if(window.Apex)Apex.savePreImportCopy();const d=defaults();state={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current},workouts:v.workouts,foods:v.foods,measurements:v.measurements,recoveries:v.recoveries||[],routines:v.routines||[],cardio:v.cardio||[]};init();setPlan(state.current.type);save();toast('Backup restored')}}catch{alert('Invalid OVERLOAD backup file')}e.target.value=''};
+$('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=window.Apex?Apex.validateBackup(await f.text()):JSON.parse(await f.text());if(!Array.isArray(v.workouts)||!Array.isArray(v.foods)||!Array.isArray(v.measurements)||!Array.isArray(v.recoveries||[])||!Array.isArray(v.routines||[]))throw Error();if(confirm('Replace current data with this backup? A safety copy of your current data is saved first.')){if(window.Apex)Apex.savePreImportCopy();const d=defaults();state={...d,...v,settings:{...d.settings,...v.settings},current:{...d.current,...v.current},workouts:v.workouts,foods:v.foods,measurements:v.measurements,recoveries:v.recoveries||[],routines:v.routines||[],cardio:v.cardio||[]};delete state.programmes;init();setPlan(state.current.type);save();toast('Backup restored')}}catch{alert('Invalid OVERLOAD backup file')}e.target.value=''};
 
 $('erase').onclick=()=>{if(confirm('Delete all app records from this browser? Export a backup first if needed.')){state=defaults();localStorage.removeItem(KEY);init();setPlan('Upper A');save();toast('Data cleared')}};
 
