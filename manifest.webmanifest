@@ -11,13 +11,13 @@
   "theme_color": "#08090b",
   "icons": [
     {
-      "src": "./apple-touch-icon.png?v=5.3.0",
+      "src": "./apple-touch-icon.png?v=5.4.0",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./overload-mark.svg?v=5.3.0",
+      "src": "./overload-mark.svg?v=5.4.0",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
