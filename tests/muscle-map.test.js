@@ -26,7 +26,8 @@ test('weekly map only counts completed or fully logged sets in the last seven da
     {date:'2026-11-12',exercises:[{name:'Squat',sets:[{done:true}]}]},
     {date:'2026-11-18',exercises:[{name:'Leg Curl',sets:[{done:false,weight:30,reps:10}]}]}
   ],'2026-11-19');
-  assert.equal(result.totals.chest,1.35);
+  assert.equal(result.totals.chest,2);
+  assert.equal(result.totals.triceps,.9);
   assert.equal(result.totals.quads,0);
   assert.equal(result.totals.hamstrings,1);
 });
