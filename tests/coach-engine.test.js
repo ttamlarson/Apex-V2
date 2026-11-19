@@ -42,3 +42,15 @@ test('counts only foods logged for today and uses saved targets', () => {
   assert.equal(result.caloriePercent, 30);
   assert.equal(result.proteinPercent, 40);
 });
+
+test('calculates logged working sets and tonnage without counting empty sets', () => {
+  const workouts = [
+    {date:'2026-11-19',exercises:[{sets:[{weight:100,reps:5},{weight:80,reps:8},{weight:'',reps:''}]}]},
+    {date:'2026-11-12',exercises:[{sets:[{weight:90,reps:5}]}]}
+  ];
+  const result = evaluate({today:'2026-11-19',workouts});
+  assert.equal(result.last7Volume.workingSets, 2);
+  assert.equal(result.last7Volume.tonnage, 1140);
+  assert.equal(result.previous7Volume.workingSets, 1);
+  assert.equal(result.previous7Volume.tonnage, 450);
+});
