@@ -836,7 +836,7 @@ function renderWorkoutMap(){
  const shade=id=>{const value=report.totals[id]||0;if(!value)return '#343a41';const alpha=.25+(.75*value/max);return 'rgba(232,117,36,'+alpha.toFixed(2)+')'};
  const figures=[
   {name:'FRONT',ids:['frontDelts','chest','biceps','forearms','abs','obliques','quads','calves'],paths:[
-   ['frontDelts','M55 58 Q43 55 38 68 L43 83 Q51 82 59 72 Z'],['frontDelts','M125 58 Q137 55 142 68 L137 83 Q129 82 121 72 Z'],
+   ['frontDelts','M55 58 Q43 55 38 68 L43 83 Q51 82 59 72 Z'],['frontDelts','M125 58 Q137 55 142 68 L137 83 Q129 82 121 72 Z'],['sideDelts','M48 62 Q57 57 63 68 L57 84 L43 82 Z'],['sideDelts','M132 62 Q123 57 117 68 L123 84 L137 82 Z'],
    ['chest','M61 78 Q75 70 88 78 L87 105 Q72 111 59 99 Z'],['chest','M92 78 Q105 70 119 78 L121 99 Q108 111 93 105 Z'],
    ['biceps','M38 86 Q30 93 34 119 L43 130 L51 113 L48 88 Z'],['biceps','M142 86 Q150 93 146 119 L137 130 L129 113 L132 88 Z'],
    ['forearms','M34 125 L43 132 L48 177 L39 190 L30 176 Z'],['forearms','M146 125 L137 132 L132 177 L141 190 L150 176 Z'],
