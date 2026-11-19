@@ -1,7 +1,7 @@
-/* OVERLOAD service worker — v5.9.1. */
-const CACHE_NAME = "overload-shell-5.9.1";
+/* OVERLOAD service worker — v5.10.0. */
+const CACHE_NAME = "overload-shell-5.10.0";
 const CACHE_PREFIX = "overload-shell-";
-const CORE = ["./","./index.html","./coach-engine.js","./muscle-map.js?v=5.9.1","./personal-records.js?v=5.9.1","./programme-templates.js?v=5.9.1","./update.js","./version.json","./manifest.webmanifest","./icon.svg","./overload-mark.svg","./apple-touch-icon.png"];
+const CORE = ["./","./index.html","./coach-engine.js","./muscle-map.js?v=5.10.0","./personal-records.js?v=5.10.0","./programme-templates.js?v=5.10.0","./update.js","./beta-feedback.js?v=5.10.0","./version.json","./manifest.webmanifest","./icon.svg","./overload-mark.svg","./apple-touch-icon.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)));
 });

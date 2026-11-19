@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.9.1",
+  "version": "5.10.0",
   "releaseDate": "2026-11-20",
-  "notes": "Moves the Add programme action inside the padded Programmes section container."
+  "notes": "Adds an opt-in beta testing and structured GitHub feedback system."
 }
