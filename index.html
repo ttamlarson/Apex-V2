@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<link rel="manifest" href="./manifest.webmanifest?v=5.4.0">
-<link rel="icon" href="./overload-mark.svg?v=5.4.0" type="image/svg+xml">
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=5.4.0">
+<link rel="manifest" href="./manifest.webmanifest?v=5.4.1">
+<link rel="icon" href="./overload-mark.svg?v=5.4.1" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=5.4.1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="OVERLOAD">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -320,14 +320,19 @@ body[data-theme="light"]{background:radial-gradient(ellipse at 50% -20%,#e4e8ee 
 
 <section class="view" id="training">
  <div class="eyebrow">SESSION TRACKER</div><h2>Training</h2>
- <div class="card muscle-map-card">
-  <div class="between"><div><div class="eyebrow">MUSCLE DISTRIBUTION</div><h3 style="margin:4px 0">Workout Load Map</h3></div><select id="muscleMapMode" aria-label="Muscle map period" style="width:auto;max-width:155px"><option value="session">This workout</option><option value="week">Last 7 days</option></select></div>
-  <p class="small" id="muscleMapCaption">Estimated target muscles from the exercises in your current session.</p>
-  <div id="muscleMapBody" class="muscle-map-layout"><div class="empty">Load a workout or add exercises to see the muscle map.</div></div>
-  <div class="muscle-map-key"><span><i class="muscle-key-low"></i>Lower emphasis</span><span><i class="muscle-key-high"></i>Higher emphasis</span><span class="small">Estimated working-set contribution</span></div>
-  <div id="muscleMapGroups" class="muscle-map-groups"></div>
-  <div class="notice">Muscle emphasis is estimated from exercise names and set counts. Compound lifts contribute to secondary muscles too. Unknown exercises are left unmapped rather than guessed; this is a programming guide, not a measurement of actual muscle activation.</div>
- </div>
+ <details class="dash-section muscle-map-fold" id="workoutMapFold">
+  <summary><span>Workout Load Map</span><span class="small">MUSCLE DISTRIBUTION</span></summary>
+  <div class="section-content">
+   <div class="card muscle-map-card">
+    <div class="between"><div><div class="eyebrow">MUSCLE DISTRIBUTION</div><h3 style="margin:4px 0">Targeted muscle groups</h3></div><select id="muscleMapMode" aria-label="Muscle map period" style="width:auto;max-width:155px"><option value="session">This workout</option><option value="week">Last 7 days</option></select></div>
+    <p class="small" id="muscleMapCaption">Estimated target muscles from the exercises in your current session.</p>
+    <div id="muscleMapBody" class="muscle-map-layout"><div class="empty">Load a workout or add exercises to see the muscle map.</div></div>
+    <div class="muscle-map-key"><span><i class="muscle-key-low"></i>Lower emphasis</span><span><i class="muscle-key-high"></i>Higher emphasis</span><span class="small">Estimated working-set contribution</span></div>
+    <div id="muscleMapGroups" class="muscle-map-groups"></div>
+    <div class="notice">Muscle emphasis is estimated from exercise names and set counts. Compound lifts contribute to secondary muscles too. Unknown exercises are left unmapped rather than guessed; this is a programming guide, not a measurement of actual muscle activation.</div>
+   </div>
+  </div>
+ </details>
  <div class="card"><div class="formgrid">
   <div class="field"><label>Workout</label><select id="wtype"><option>Upper A</option><option>Lower A</option><option>Upper B</option><option>Lower B</option><option>Push Day</option><option>Pull Day</option><option>Leg Day</option><option>Custom</option></select></div>
   <div class="field"><label>Date</label><input id="wdate" type="date"></div>
@@ -493,7 +498,7 @@ body[data-theme="light"]{background:radial-gradient(ellipse at 50% -20%,#e4e8ee 
 <div id="toast" class="hidden" role="status"></div>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="./muscle-map.js?v=5.4.0"></script>
+<script src="./muscle-map.js?v=5.4.1"></script>
 <script src="./coach-engine.js"></script>
 <script>
 (() => {
@@ -1115,6 +1120,12 @@ $('saveRoutine').onclick=()=>{const name=$('routineName').value.trim();if(!name|
 $('savedRoutines').onclick=e=>{const b=e.target.closest('button');if(!b)return;const r=state.routines.find(x=>x.id===(b.dataset.routineStart||b.dataset.routineEdit||b.dataset.routineDuplicate||b.dataset.routineDelete));if(!r)return;if(b.dataset.routineStart){state.current.type=r.name;state.current.date=today();state.current.duration='';state.current.notes='';state.current.exercises=r.exercises.map(x=>newEx(x.name,x.sets,x.target));init();renderExercises();document.querySelector('[data-tab="training"]').click();toast('Routine loaded into workout')}if(b.dataset.routineEdit)routineFromCurrent(r);if(b.dataset.routineDuplicate){state.routines.push({...JSON.parse(JSON.stringify(r)),id:id(),name:r.name+' Copy'});save();toast('Routine duplicated')}if(b.dataset.routineDelete&&confirm('Delete this saved routine?')){state.routines=state.routines.filter(x=>x.id!==r.id);save();toast('Routine deleted')}};
 $('analyticsExercise').onchange=renderAnalytics;
 $('muscleMapMode').onchange=renderWorkoutMap;
+const workoutMapFold=$('workoutMapFold');
+if(workoutMapFold){
+ const foldKey='overload.sections.training-workout-load-map';
+ workoutMapFold.open=localStorage.getItem(foldKey)==='open';
+ workoutMapFold.addEventListener('toggle',()=>localStorage.setItem(foldKey,workoutMapFold.open?'open':'closed'));
+}
 $('loadplan').onclick=()=>{sync();setPlan($('wtype').value);persist();toast('Workout loaded')};
 $('addex').onclick=()=>{state.current.exercises.push(newEx('New exercise'));renderExercises();persist()};
 $('exercises').oninput=e=>{const t=e.target;if(t.dataset.name){const x=state.current.exercises.find(a=>a.id===t.dataset.name);if(x)x.name=t.value}if(t.dataset.set){const x=state.current.exercises.find(a=>a.id===t.dataset.set),s=x?.sets[+t.dataset.i];if(s)s[t.dataset.key]=t.value;renderWorkoutMap()}
