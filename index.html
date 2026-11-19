@@ -828,10 +828,15 @@ function newEx(name='',sets=3,target='8–12'){return {id:id(),name,target,sets:
 function setPlan(type){state.current.type=type;state.current.exercises=(plans[type]||[]).map(p=>newEx(...p));renderExercises()}
 function renderWorkoutMap(){
  const target=$('muscleMapBody');if(!target||!window.OverloadMuscleMap)return;
- const weekly=$('muscleMapMode')?.value==='week';
- const report=weekly?window.OverloadMuscleMap.mapWeekly(state.workouts,today()):window.OverloadMuscleMap.mapWorkout({exercises:state.current.exercises||[]});
- const title=weekly?'Last 7 days':'Current workout';
- $('muscleMapCaption').textContent=weekly?'Completed or fully logged sets from saved workouts in the last 7 days.':'Estimated target muscles from the exercises in your current session.';
+ const mode=$('muscleMapMode');
+ const selected=mode.value;
+ const savedOptions=[...state.workouts].reverse().map(w=>'<option value="saved:'+esc(w.id)+'">'+esc(w.type||'Workout')+' · '+dateText(w.date)+'</option>').join('');
+ mode.innerHTML='<option value="session">This workout</option><option value="week">Last 7 days</option>'+savedOptions;
+ if(selected==='week'||selected==='session'||(selected.startsWith('saved:')&&state.workouts.some(w=>String(w.id)===selected.slice(6))))mode.value=selected;
+ const weekly=mode.value==='week';
+ const selectedWorkout=mode.value.startsWith('saved:')?state.workouts.find(w=>String(w.id)===mode.value.slice(6)):null;
+ const report=weekly?window.OverloadMuscleMap.mapWeekly(state.workouts,today()):selectedWorkout?window.OverloadMuscleMap.mapWorkout(selectedWorkout,'logged'):window.OverloadMuscleMap.mapWorkout({exercises:state.current.exercises||[]});
+ $('muscleMapCaption').textContent=weekly?'Completed or fully logged sets from saved workouts in the last 7 days.':selectedWorkout?'Completed or fully logged sets from '+(selectedWorkout.type||'saved workout')+' on '+dateText(selectedWorkout.date)+'.':'Estimated target muscles from the exercises in your current session.';
  const max=Math.max(1,...report.groups.map(g=>g.sets));
  const shade=id=>{const value=report.totals[id]||0;if(!value)return '#343a41';const alpha=.25+(.75*value/max);return 'rgba(232,117,36,'+alpha.toFixed(2)+')'};
  const figures=[
