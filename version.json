@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.3.0",
+  "version": "5.4.0",
   "releaseDate": "2026-11-19",
-  "notes": "OVERLOAD 5.3.0 coaching foundation: adds a dedicated coaching workspace, transparent readiness indicators, rolling workout frequency, daily nutrition context, and a separately tested deterministic coaching engine. Existing training, nutrition, recovery and local-storage records are preserved."
+  "notes": "OVERLOAD 5.4.0 adds a workout muscle-load map with per-session and rolling seven-day views, primary and secondary muscle estimates, and tested exercise mapping. Existing workout records and local storage are preserved."
 }
