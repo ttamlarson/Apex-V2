@@ -3,7 +3,7 @@ const CACHE_NAME = "overload-shell-5.11.0";
 const CACHE_PREFIX = "overload-shell-";
 const CORE = ["./","./index.html","./coach-engine.js","./muscle-map.js","./personal-records.js","./programme-templates.js","./update.js","./beta-feedback.js","./version.json","./manifest.webmanifest","./icon.svg","./overload-mark.svg","./apple-touch-icon.png"];
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)));
 });
 self.addEventListener("message", event => {
   if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
