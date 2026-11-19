@@ -1,7 +1,7 @@
-/* OVERLOAD service worker — v5.10.0. */
-const CACHE_NAME = "overload-shell-5.10.0";
+/* OVERLOAD service worker — v5.11.0. */
+const CACHE_NAME = "overload-shell-5.11.0";
 const CACHE_PREFIX = "overload-shell-";
-const CORE = ["./","./index.html","./coach-engine.js","./muscle-map.js?v=5.10.0","./personal-records.js?v=5.10.0","./programme-templates.js?v=5.10.0","./update.js","./beta-feedback.js?v=5.10.0","./version.json","./manifest.webmanifest","./icon.svg","./overload-mark.svg","./apple-touch-icon.png"];
+const CORE = ["./","./index.html","./coach-engine.js","./muscle-map.js","./personal-records.js","./programme-templates.js","./update.js","./beta-feedback.js","./version.json","./manifest.webmanifest","./icon.svg","./overload-mark.svg","./apple-touch-icon.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)));
 });
@@ -29,10 +29,10 @@ self.addEventListener("fetch", event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
       }
       return response;
-    }).catch(() => caches.match(request).then(cached => cached || caches.match("./index.html"))));
+    }).catch(() => caches.match(request, {ignoreSearch:true}).then(cached => cached || caches.match("./index.html"))));
     return;
   }
-  event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => {
+  event.respondWith(caches.match(request, {ignoreSearch:true}).then(cached => cached || fetch(request).then(response => {
     if (response && response.ok) {
       const copy = response.clone();
       caches.open(CACHE_NAME).then(cache => cache.put(request, copy));

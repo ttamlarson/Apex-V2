@@ -11,7 +11,28 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Check beta feedback script syntax
-        run: node --check beta-feedback.js
+      - name: Check application JavaScript and PWA metadata
+        run: |
+          node --check beta-feedback.js
+          node --check sw.js
+          node --check update.js
+          node <<'NODE'
+          const fs = require('fs');
+          const { spawnSync } = require('child_process');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const scripts = html.split('<script').slice(1).map(block => block.slice(block.indexOf('>') + 1, block.indexOf('</script>'))).filter(source => source.trim());
+          scripts.forEach((source, index) => {
+            const path = `/tmp/overload-inline-${index}.js`;
+            fs.writeFileSync(path, source);
+            const result = spawnSync(process.execPath, ['--check', path], { encoding: 'utf8' });
+            if (result.status !== 0) {
+              process.stderr.write(result.stderr || result.stdout);
+              process.exit(result.status || 1);
+            }
+          });
+          JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
+          JSON.parse(fs.readFileSync('version.json', 'utf8'));
+          console.log(`Validated ${scripts.length} inline script blocks and PWA JSON metadata.`);
+          NODE
       - name: Run coaching engine tests
         run: node --test tests/coach-engine.test.js tests/muscle-map.test.js tests/personal-records.test.js tests/programme-templates.test.js
