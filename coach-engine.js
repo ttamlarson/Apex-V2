@@ -34,6 +34,17 @@
     const recent = Array.isArray(workouts) ? workouts : [];
     const last7 = recent.filter(w => { const age = dateDistance(w && w.date, today); return age >= 0 && age < 7; }).length;
     const previous7 = recent.filter(w => { const age = dateDistance(w && w.date, today); return age >= 7 && age < 14; }).length;
+    const volumeFor = (minAge,maxAge) => recent.reduce((total, workout) => {
+      const age = dateDistance(workout && workout.date, today);
+      if (age < minAge || age >= maxAge) return total;
+      (workout.exercises || []).forEach(exercise => (exercise.sets || []).forEach(set => {
+        const weight = number(set.weight), reps = number(set.reps);
+        if (weight > 0 && reps > 0) { total.workingSets++; total.tonnage += weight * reps; }
+      }));
+      return total;
+    }, { workingSets:0, tonnage:0 });
+    const last7Volume = volumeFor(0,7);
+    const previous7Volume = volumeFor(7,14);
     const foodToday = (Array.isArray(foods) ? foods : []).filter(f => f && f.date === today);
     const intake = foodToday.reduce((total, food) => ({
       calories: total.calories + number(food.cal ?? food.calories),
@@ -50,7 +61,7 @@
     if (last7 >= 4 && last7 > previous7 * 1.5) recommendations.push({ type:'load', title:'Training frequency has increased', detail:last7 + ' sessions in the last 7 days versus ' + previous7 + ' in the previous week. Watch performance and recovery before adding volume.' });
     else if (last7 === 0) recommendations.push({ type:'training', title:'Restart with a manageable session', detail:'No workouts are logged in the last 7 days. Begin with a familiar programme and build consistency before increasing volume.' });
     return {
-      today, recoveryAge, recoveryComplete, readiness, readinessReasons: reasons, last7, previous7,
+      today, recoveryAge, recoveryComplete, readiness, readinessReasons: reasons, last7, previous7, last7Volume, previous7Volume,
       calorieTarget, proteinTarget, intake,
       caloriePercent: Math.round(intake.calories / calorieTarget * 100),
       proteinPercent: Math.round(intake.protein / proteinTarget * 100),
