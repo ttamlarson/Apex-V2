@@ -2,7 +2,6 @@
 name: Beta bug report
 about: Report a reproducible issue found while testing OVERLOAD
 title: "[Beta Bug] "
-labels: ["bug", "beta-feedback"]
 assignees: []
 ---
 
