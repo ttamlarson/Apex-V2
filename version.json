@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.9.0",
+  "version": "5.9.1",
   "releaseDate": "2026-11-20",
-  "notes": "Adds the ability to create and save additional custom training programmes alongside the editable built-in templates."
+  "notes": "Moves the Add programme action inside the padded Programmes section container."
 }
