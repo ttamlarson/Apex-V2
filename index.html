@@ -869,43 +869,15 @@ function renderLifts(){const m={};state.workouts.forEach(w=>w.exercises.forEach(
 function renderRecovery(){$('recoverylist').innerHTML=state.recoveries.length?[...state.recoveries].reverse().map(r=>`<div class="listitem"><div class="between"><strong>${dateText(r.date)}</strong><span class="small">${esc(r.sleep||'—')} h sleep</span></div><div class="small">Energy ${r.energy}/5 · Stress ${r.stress}/5 · Soreness ${r.soreness}/5</div>${r.notes?`<p class="small">${esc(r.notes)}</p>`:''}<button class="iconbtn" data-recovery-del="${r.id}">Delete</button></div>`).join(''):'<div class="empty">No recovery check-ins yet.</div>'}
 
 function renderCoach(){
- const todayDate=today(),now=new Date(todayDate+'T12:00:00');
- const daysAgo=date=>Math.floor((now-new Date((date||todayDate)+'T12:00:00'))/86400000);
- const recentRecovery=[...state.recoveries].filter(r=>r&&r.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
- const recoveryAge=recentRecovery?daysAgo(recentRecovery.date):Infinity;
- let readiness=100,readinessReasons=[];
- if(recentRecovery&&recoveryAge<=3){
-  const sleep=n(recentRecovery.sleep),energy=n(recentRecovery.energy),stress=n(recentRecovery.stress),soreness=n(recentRecovery.soreness);
-  if(sleep>0&&sleep<5){readiness-=25;readinessReasons.push('short sleep');}
-  else if(sleep>0&&sleep<6.5){readiness-=12;readinessReasons.push('sleep below 6.5 hours');}
-  if(energy>0&&energy<=2){readiness-=15;readinessReasons.push('low energy');}
-  if(stress>=4){readiness-=10;readinessReasons.push('elevated stress');}
-  if(soreness>=4){readiness-=10;readinessReasons.push('high soreness');}
-  readiness=Math.max(0,Math.min(100,readiness));
-  $('coachReadiness').textContent=readiness+'/100';
-  $('coachReadinessLabel').textContent=readiness>=80?'Favourable signals in your latest check-in.':readiness>=60?'Some recovery flags — manage session effort.':'Several recovery flags — consider an easier day.';
-  $('coachReadinessBar').style.width=readiness+'%';
- }else{
-  $('coachReadiness').textContent='—';$('coachReadinessLabel').textContent=recentRecovery?'Latest check-in is more than 3 days old.':'Log a recovery check-in to establish a baseline.';$('coachReadinessBar').style.width='0%';
- }
- const last7=state.workouts.filter(w=>daysAgo(w.date)>=0&&daysAgo(w.date)<7).length;
- const prev7=state.workouts.filter(w=>daysAgo(w.date)>=7&&daysAgo(w.date)<14).length;
- $('coachSessions').textContent=String(last7);
- $('coachSessionsLabel').textContent='Sessions in the last 7 days · '+prev7+' in the previous 7';
- const brief=[];
- if(!recentRecovery||recoveryAge>3)brief.push('<div class="listitem"><strong>Recovery data needed</strong><div class="small">Add a current sleep, energy, stress and soreness check-in so the brief can reflect how you are feeling.</div><button class="btn secondary" data-go="recovery">Log recovery</button></div>');
- else if(readiness<60)brief.push('<div class="listitem"><strong>Prioritise recovery today</strong><div class="small">Your latest check-in recorded '+readinessReasons.join(', ')+'. Consider rest, mobility or a lighter technique session rather than chasing load.</div></div>');
- else if(readiness<80)brief.push('<div class="listitem"><strong>Keep effort controlled</strong><div class="small">Your latest check-in has '+readinessReasons.join(' and ')+'. Keep a few reps in reserve and adjust if warm-ups feel unusually difficult.</div></div>');
- else brief.push('<div class="listitem"><strong>Recovery signals look favourable</strong><div class="small">Your latest logged check-in has no major flags in this simple indicator. Follow your planned session and let performance guide load.</div></div>');
- if(last7>=4&&last7>prev7*1.5)brief.push('<div class="listitem"><strong>Training frequency has increased</strong><div class="small">'+last7+' sessions in the last 7 days versus '+prev7+' in the previous week. Watch performance and recovery before adding more volume.</div></div>');
- else if(last7===0)brief.push('<div class="listitem"><strong>Restart with a manageable session</strong><div class="small">No workouts are logged in the last 7 days. Begin with a familiar programme and build consistency before increasing volume.</div></div>');
- const recentWorkout=[...state.workouts].filter(w=>w&&w.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
- if(recentWorkout)brief.push('<div class="listitem"><strong>Last logged session</strong><div class="small">'+esc(recentWorkout.type||'Workout')+' · '+dateText(recentWorkout.date)+'</div></div>');
- $('coachBrief').innerHTML=brief.join('');
- $('coachLoad').innerHTML='<div class="grid two"><div class="stat"><div class="small">LAST 7 DAYS</div><div class="metric">'+last7+'</div><div class="small">workouts logged</div></div><div class="stat"><div class="small">PREVIOUS 7 DAYS</div><div class="metric">'+prev7+'</div><div class="small">workouts logged</div></div></div><p class="small">This is a session-frequency comparison, not a measure of physiological training stress. A future load model will use completed sets, volume and intensity.</p>';
- const intake=totals(todayDate),calGoal=Math.max(1,n(state.settings.calories)),proteinGoal=Math.max(1,n(state.settings.protein));
- const calPct=Math.round(intake.cal/calGoal*100),proteinPct=Math.round(intake.pro/proteinGoal*100);
- $('coachNutrition').innerHTML='<div class="grid two"><div class="stat"><div class="small">ENERGY</div><div class="metric">'+Math.round(intake.cal)+' / '+calGoal+'</div><div class="small">'+calPct+'% of daily target</div></div><div class="stat"><div class="small">PROTEIN</div><div class="metric">'+Math.round(intake.pro)+' / '+proteinGoal+' g</div><div class="small">'+proteinPct+'% of daily target</div></div></div><div class="notice">Nutrition totals only include foods recorded for today. Missing entries are not treated as zero intake.</div><button class="btn secondary" data-go="nutrition">Open food log</button>';
+ const report=window.OverloadCoach.evaluate({workouts:state.workouts,recoveries:state.recoveries,foods:state.foods,settings:state.settings,today:today()});
+ $('coachReadiness').textContent=report.readiness===null?'—':report.readiness+'/100';
+ $('coachReadinessLabel').textContent=report.readiness===null?(report.recoveryAge===Infinity?'Log a recovery check-in to establish a baseline.':'Latest check-in is more than 3 days old.'):(report.readiness>=80?'Favourable signals in your latest check-in.':report.readiness>=60?'Some recovery flags — manage session effort.':'Several recovery flags — consider an easier day.');
+ $('coachReadinessBar').style.width=(report.readiness===null?0:report.readiness)+'%';
+ $('coachSessions').textContent=String(report.last7);
+ $('coachSessionsLabel').textContent='Sessions in the last 7 days · '+report.previous7+' in the previous 7';
+ $('coachBrief').innerHTML=report.recommendations.map(item=>'<div class="listitem"><strong>'+esc(item.title)+'</strong><div class="small">'+esc(item.detail)+'</div></div>').join('')+(report.lastWorkout?'<div class="listitem"><strong>Last logged session</strong><div class="small">'+esc(report.lastWorkout.type||'Workout')+' · '+dateText(report.lastWorkout.date)+'</div></div>':'');
+ $('coachLoad').innerHTML='<div class="grid two"><div class="stat"><div class="small">LAST 7 DAYS</div><div class="metric">'+report.last7+'</div><div class="small">workouts logged</div></div><div class="stat"><div class="small">PREVIOUS 7 DAYS</div><div class="metric">'+report.previous7+'</div><div class="small">workouts logged</div></div></div><p class="small">This is a session-frequency comparison, not a measure of physiological training stress. A future load model will use completed sets, volume and intensity.</p>';
+ $('coachNutrition').innerHTML='<div class="grid two"><div class="stat"><div class="small">ENERGY</div><div class="metric">'+Math.round(report.intake.calories)+' / '+report.calorieTarget+'</div><div class="small">'+report.caloriePercent+'% of daily target</div></div><div class="stat"><div class="small">PROTEIN</div><div class="metric">'+Math.round(report.intake.protein)+' / '+report.proteinTarget+' g</div><div class="small">'+report.proteinPercent+'% of daily target</div></div></div><div class="notice">Nutrition totals only include foods recorded for today. Missing entries are not treated as zero intake.</div><button class="btn secondary" data-go="nutrition">Open food log</button>';
 }
 
 function renderHome(){
@@ -1363,6 +1335,7 @@ if(state.current.exercises.length)renderExercises();else setPlan(state.current.t
 render();
 })();
 </script>
+<script src="./coach-engine.js"></script>
 <script src="./update.js"></script>
 <script>
 if ('serviceWorker' in navigator && !(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())) {
