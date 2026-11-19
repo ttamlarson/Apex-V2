@@ -11,5 +11,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Check beta feedback script syntax
+        run: node --check beta-feedback.js
       - name: Run coaching engine tests
         run: node --test tests/coach-engine.test.js tests/muscle-map.test.js tests/personal-records.test.js tests/programme-templates.test.js
