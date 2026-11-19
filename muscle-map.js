@@ -57,7 +57,8 @@
   function mapWorkout(workout, countMode='planned') {
     const totals = empty();
     (workout && Array.isArray(workout.exercises) ? workout.exercises : []).forEach(ex => addExercise(totals,ex,countMode));
-    return { totals, groups: GROUPS.map(g=>({...g,sets:Math.round(totals[g.id]*10)/10})).filter(g=>g.sets>0).sort((a,b)=>b.sets-a.sets) };
+    const rounded = Object.fromEntries(Object.entries(totals).map(([key,value])=>[key,Math.round(value*100)/100]));
+    return { totals:rounded, groups: GROUPS.map(g=>({...g,sets:Math.round(rounded[g.id]*10)/10})).filter(g=>g.sets>0).sort((a,b)=>b.sets-a.sets) };
   }
   function mapWeekly(workouts, today=new Date().toISOString().slice(0,10)) {
     const totals = empty();
@@ -68,7 +69,8 @@
       if(!Number.isFinite(age)||age<0||age>=7)return;
       (workout.exercises||[]).forEach(ex=>addExercise(totals,ex,'logged'));
     });
-    return { totals, groups:GROUPS.map(g=>({...g,sets:Math.round(totals[g.id]*10)/10})).filter(g=>g.sets>0).sort((a,b)=>b.sets-a.sets) };
+    const rounded = Object.fromEntries(Object.entries(totals).map(([key,value])=>[key,Math.round(value*100)/100]));
+    return { totals:rounded, groups:GROUPS.map(g=>({...g,sets:Math.round(rounded[g.id]*10)/10})).filter(g=>g.sets>0).sort((a,b)=>b.sets-a.sets) };
   }
   window.OverloadMuscleMap = Object.freeze({ GROUPS, contributions, mapWorkout, mapWeekly });
 })();
