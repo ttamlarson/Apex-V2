@@ -12,4 +12,4 @@ jobs:
         with:
           node-version: 22
       - name: Run coaching engine tests
-        run: node --test tests/coach-engine.test.js tests/muscle-map.test.js tests/personal-records.test.js
+        run: node --test tests/coach-engine.test.js tests/muscle-map.test.js tests/personal-records.test.js tests/programme-templates.test.js
