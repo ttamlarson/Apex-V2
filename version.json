@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.4.0",
+  "version": "5.4.1",
   "releaseDate": "2026-11-19",
-  "notes": "OVERLOAD 5.4.0 adds a workout muscle-load map with per-session and rolling seven-day views, primary and secondary muscle estimates, and tested exercise mapping. Existing workout records and local storage are preserved."
+  "notes": "OVERLOAD 5.4.1 makes the Workout Load Map collapsible with its open/closed state remembered on this device. Existing workout records and local storage remain compatible."
 }
