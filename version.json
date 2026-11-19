@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.5.0",
+  "version": "5.6.0",
   "releaseDate": "2026-11-20",
-  "notes": "Adds a Big Three personal-record tracker for bench press, squat and deadlift, derived from saved workout sets, plus optional browser notifications when a new best load is recorded. Existing workout history and local data remain compatible."
+  "notes": "Adds custom training split management: create programmes from saved workout days, add or remove days, and delete splits without deleting the underlying routines or workout history. Existing local workout data remains compatible."
 }
