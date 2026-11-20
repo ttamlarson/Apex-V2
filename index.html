@@ -655,6 +655,7 @@ let storageLoadError=false;
 let storageWriteWarningShown=false;
 let foodRenderSnapshot=[];
 let foodEditIndex=null;
+let foodCopySource=null;
 let foodEditOriginal=null;
 let foodEditInputSnapshot=null;
 let barcodeBasis='manual';
@@ -1404,7 +1405,7 @@ function setFoodEditorLocked(locked){
  $('scanBarcode').disabled=locked;
 }
 function resetFoodEditor(){
- foodEditIndex=null;foodEditOriginal=null;foodEditInputSnapshot=null;barcodeBasis='manual';
+ foodEditIndex=null;foodCopySource=null;foodEditOriginal=null;foodEditInputSnapshot=null;barcodeBasis='manual';
  $('fname').value='';$('fcal').value='';$('fpro').value='';$('fcarb').value='';$('ffat').value='';$('famount').value='';
  $('famountWrap').classList.add('hidden');
  $('fbarcode').value='';$('barcodeStatus').textContent='';
@@ -1413,6 +1414,7 @@ function resetFoodEditor(){
 }
 function beginFoodEdit(index){
  const food=state.foods[index];
+ foodCopySource=null;
  if(!food||typeof food!=='object')return;
  foodEditIndex=index;foodEditOriginal=food;foodEditInputSnapshot={};barcodeBasis='manual';
  const fields={name:'fname',cal:'fcal',pro:'fpro',carb:'fcarb',fat:'ffat'};
@@ -1458,8 +1460,11 @@ $('addfood').onclick=()=>{
   if(raw.trim()==='')return '';
   return safeNutritionMultiply(nutritionNumber(raw),amountFactor);
  };
- state.foods.push({id:id(),name,cal:scaleValue('fcal')||0,pro:scaleValue('fpro')||0,carb:scaleValue('fcarb'),fat:scaleValue('ffat'),date:$('fdate').value||today()});
- resetFoodEditor();save();toast('Food added');
+ const entry=foodCopySource?{...foodCopySource,id:id(),date:$('fdate').value||today()}:{id:id(),date:$('fdate').value||today()};
+ Object.assign(entry,{name,cal:scaleValue('fcal')||0,pro:scaleValue('fpro'),carb:scaleValue('fcarb'),fat:scaleValue('ffat')});
+ state.foods.push(entry);
+ const wasCopied=!!foodCopySource;
+ resetFoodEditor();save();toast(wasCopied?'Copied food added to log':'Food added');
 };
 $('cancelFoodEdit').onclick=()=>resetFoodEditor();
 $('fdate').onchange=renderFood;
@@ -1469,10 +1474,19 @@ $('foodlist').onclick=e=>{
   const index=validFoodIndex(copyButton.dataset.foodCopyIndex);
   if(index===null){toast('Food changed since the list was rendered; refresh and try again.');return}
   const source=state.foods[index];
-  const copied={...source,id:id(),date:$('fdate').value||today()};
-  state.foods.push(copied);
-  save();
-  toast((source.name||'Food')+' copied to this date');
+  resetFoodEditor();
+  foodCopySource={...source};
+  $('fname').value=source.name??'';
+  $('fcal').value=source.cal??source.calories??'';
+  $('fpro').value=source.pro??source.protein??'';
+  $('fcarb').value=source.carb??'';
+  $('ffat').value=source.fat??'';
+  $('fdate').value=today();
+  $('addfood').textContent='Add copied food';
+  $('barcodeStatus').textContent='Copied details are ready. Choose a date, make any changes, then add the food.';
+  $('fname').focus();
+  document.getElementById('nutrition').scrollIntoView({behavior:'smooth',block:'start'});
+  toast((source.name||'Food')+' copied into the food entry form');
   return;
  }
  const editButton=e.target.closest('[data-food-edit-index]');
