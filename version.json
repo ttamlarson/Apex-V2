@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.12.0",
-  "releaseDate": "2026-11-20",
-  "notes": "Improves responsive phone layouts, navigation, touch targets, safe-area spacing and form sizing."
+  "version": "5.13.0",
+  "releaseDate": "2026-11-21",
+  "notes": "Adds one-tap copying of logged food entries, preserving all nutrition details and metadata."
 }
