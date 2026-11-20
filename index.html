@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<link rel="manifest" href="./manifest.webmanifest?v=5.12.0">
-<link rel="icon" href="./overload-mark.svg?v=5.12.0" type="image/svg+xml">
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=5.12.0">
+<link rel="manifest" href="./manifest.webmanifest?v=5.13.0">
+<link rel="icon" href="./overload-mark.svg?v=5.13.0" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=5.13.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="OVERLOAD">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -638,10 +638,10 @@ input,select,textarea{max-width:100%;font-size:16px}
 <div id="toast" class="hidden" role="status"></div>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="./muscle-map.js?v=5.12.0"></script>
+<script src="./muscle-map.js?v=5.13.0"></script>
 <script src="./coach-engine.js"></script>
-<script src="./personal-records.js?v=5.12.0"></script>
-<script src="./programme-templates.js?v=5.12.0"></script>
+<script src="./personal-records.js?v=5.13.0"></script>
+<script src="./programme-templates.js?v=5.13.0"></script>
 <script>
 (() => {
 'use strict';
@@ -1101,7 +1101,7 @@ function renderFood(){
  $('nprodata').textContent=macroDataStatus(fs.map(entry=>entry.food),'pro','protein');
  $('ncarbdata').textContent=macroDataStatus(fs.map(entry=>entry.food),'carb','carbohydrate');
  $('nfatdata').textContent=macroDataStatus(fs.map(entry=>entry.food),'fat','fat');
- $('foodlist').innerHTML=fs.length?fs.map(({food,index})=>`<div class="listitem"><div class="between"><strong>${esc(food.name||'Food')}</strong><div class="row"><button class="btn secondary" type="button" data-food-edit-index="${index}">Edit</button><button class="iconbtn" type="button" data-food-index="${index}" aria-label="Delete ${esc(food.name||'food')}">✕</button></div></div><div class="small">Calories ${nutritionValueText(food.cal ?? food.calories,'kcal')} · Protein ${nutritionValueText(food.pro ?? food.protein,'g')} · Carbohydrate ${nutritionValueText(food.carb,'g')} · Fat ${nutritionValueText(food.fat,'g')}</div></div>`).join(''):'<div class="empty">No food logged for this date.</div>';
+ $('foodlist').innerHTML=fs.length?fs.map(({food,index})=>`<div class="listitem"><div class="between"><strong>${esc(food.name||'Food')}</strong><div class="row"><button class="btn secondary" type="button" data-food-copy-index="${index}">Copy</button><button class="btn secondary" type="button" data-food-edit-index="${index}">Edit</button><button class="iconbtn" type="button" data-food-index="${index}" aria-label="Delete ${esc(food.name||'food')}">✕</button></div></div><div class="small">Calories ${nutritionValueText(food.cal ?? food.calories,'kcal')} · Protein ${nutritionValueText(food.pro ?? food.protein,'g')} · Carbohydrate ${nutritionValueText(food.carb,'g')} · Fat ${nutritionValueText(food.fat,'g')}</div></div>`).join(''):'<div class="empty">No food logged for this date.</div>';
 }
 function renderWorkoutHistory(){$('whistory').innerHTML=state.workouts.length?[...state.workouts].reverse().map(w=>`<div class="listitem"><div class="between"><strong>${esc(w.type)}</strong><span class="small">${dateText(w.date)}</span></div><div class="small">${w.exercises.length} exercises · ${w.exercises.reduce((a,e)=>a+e.sets.filter(s=>s.done).length,0)} sets completed${w.duration?' · '+esc(w.duration)+' min':''}</div>${w.notes?`<p class="small">${esc(w.notes)}</p>`:''}<div class="row"><button class="btn secondary" data-reload="${w.id}">Load again</button><button class="btn danger" data-work-del="${w.id}">Delete</button></div></div>`).join(''):'<div class="empty">No workouts saved yet.</div>'}
 function renderMeasures(){const ms=[...state.measurements].sort((a,b)=>a.date.localeCompare(b.date));const last=ms.filter(m=>m.weight!=='').at(-1);$('dweight').textContent=last?last.weight+' kg':'—';$('measurelist').innerHTML=ms.length?[...ms].reverse().map(m=>`<div class="history"><span>${dateText(m.date)}</span><strong>${m.weight!==''?esc(m.weight)+' kg':'—'}</strong><span>${m.waist?esc(m.waist)+' cm waist':'—'}</span><button class="iconbtn" data-measure-del="${m.id}">✕</button></div>`).join(''):'<div class="empty">No measurements yet.</div>';drawChart(ms)}
@@ -1464,6 +1464,17 @@ $('addfood').onclick=()=>{
 $('cancelFoodEdit').onclick=()=>resetFoodEditor();
 $('fdate').onchange=renderFood;
 $('foodlist').onclick=e=>{
+ const copyButton=e.target.closest('[data-food-copy-index]');
+ if(copyButton){
+  const index=validFoodIndex(copyButton.dataset.foodCopyIndex);
+  if(index===null){toast('Food changed since the list was rendered; refresh and try again.');return}
+  const source=state.foods[index];
+  const copied={...source,id:id(),date:$('fdate').value||today()};
+  state.foods.push(copied);
+  save();
+  toast((source.name||'Food')+' copied to this date');
+  return;
+ }
  const editButton=e.target.closest('[data-food-edit-index]');
  if(editButton){const index=validFoodIndex(editButton.dataset.foodEditIndex);if(index!==null)beginFoodEdit(index);return}
  const b=e.target.closest('[data-food-index]');
@@ -1658,7 +1669,7 @@ if(state.current.exercises.length)renderExercises();else setPlan(state.current.t
 render();
 })();
 </script>
-<script src="./beta-feedback.js?v=5.12.0"></script>
+<script src="./beta-feedback.js?v=5.13.0"></script>
 <script src="./update.js"></script>
 <script>
 if ('serviceWorker' in navigator && !(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())) {
