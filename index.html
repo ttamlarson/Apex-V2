@@ -1482,6 +1482,7 @@ $('foodlist').onclick=e=>{
   $('fcarb').value=source.carb??'';
   $('ffat').value=source.fat??'';
   $('fdate').value=today();
+  renderFood(); // Keep the visible daily log in sync with the destination date.
   $('addfood').textContent='Add copied food';
   $('barcodeStatus').textContent='Copied details are ready. Choose a date, make any changes, then add the food.';
   $('fname').focus();

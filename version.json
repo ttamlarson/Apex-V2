@@ -1,6 +1,6 @@
 {
   "app": "OVERLOAD",
-  "version": "5.14.0",
+  "version": "5.14.1",
   "releaseDate": "2026-11-21",
   "notes": "Changes logged-food Copy into a pre-filled entry form so users can choose a destination date and add only when ready."
 }
